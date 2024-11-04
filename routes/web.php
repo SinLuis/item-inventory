@@ -17,4 +17,4 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::redirect('/', '/catchcertificate');
+Route::redirect('/', '/iteminventory')->name('login');

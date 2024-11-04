@@ -18,6 +18,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Auth\Login;
+use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -27,10 +28,10 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->sidebarCollapsibleOnDesktop(true)
             ->id('admin')
-            ->path('catchcertificate')
+            ->path('iteminventory')
             ->login(Login::class)
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => 'rgb(50,205,50)',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -54,6 +55,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->plugin(FilamentSpatieRolesPermissionsPlugin::make());
     }
 }

@@ -10,13 +10,17 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
+    public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $this->call(UserSeeder::class);
+        $this->call(PermissionSeeder::class);
+        $this->call(ClassItemSeeder::class);
+        $this->call(CountrySeeder::class);
+        $this->call(ClassSupplierSeeder::class);
+        $this->call(UofmSeeder::class);
+        $this->call(CurrencySeeder::class);
+        $this->call(StorageSeeder::class);
+        $this->call(ItemSeeder::class);
+        $this->call(SupplierSeeder::class);
     }
 }
