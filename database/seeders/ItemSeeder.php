@@ -42,6 +42,15 @@ class ItemSeeder extends Seeder
                 'long_description' => 'FROZEN SKIPJACK TUNA',
                 'created_at' => now(),
                 'updated_at' => now()
+            ],
+            [
+                'uofm_id' => 1,
+                'class_id' => 3,
+                'code' => 'WST-001',
+                'description' => 'Waste',
+                'long_description' => '',
+                'created_at' => now(),
+                'updated_at' => now()
             ]
         ]);
     }

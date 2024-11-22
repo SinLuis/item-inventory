@@ -12,10 +12,11 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasPermissionTo('View User') || $user->hasRole('Admin')) {
-            return true;
-        }
-        return false;
+        // if ($user->hasPermissionTo('View User') || $user->hasRole('Admin')) {
+        //     return true;
+        // }
+        // return false;
+        return $user->hasRole('Admin');
     }
 
     /**
@@ -34,10 +35,11 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasPermissionTo('Create User') || $user->hasRole('Admin')) {
-            return true;
-        }
-        return false;
+        // if ($user->hasPermissionTo('Create User') || $user->hasRole('Admin')) {
+        //     return true;
+        // }
+        // return false;
+        return $user->hasRole('Admin');
     }
 
     /**

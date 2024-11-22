@@ -16,12 +16,52 @@ class StorageSeeder extends Seeder
     {
         DB::table('storages')->insert([
             [
-                'storage' => 'KACS',
+                'storage' => 'MB01',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'storage' => 'MB02',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
                 'storage' => 'PBN 1',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'storage' => 'PBN 2',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'storage' => 'FG01',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'storage' => 'FG02',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'storage' => 'IDM01',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'storage' => 'IDM02',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'storage' => 'KACS',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'storage' => 'SAMICO',
                 'created_at' => now(),
                 'updated_at' => now()
             ]

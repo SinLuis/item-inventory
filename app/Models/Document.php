@@ -21,5 +21,10 @@ class Document extends Model
         return $this->hasMany(Bbin::class);
     }
 
+    public function bbinadj()
+    {
+        return $this->hasMany(Bbinadj::class);
+    }
+
     protected $table = 'documents';
 }

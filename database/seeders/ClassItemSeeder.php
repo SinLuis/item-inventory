@@ -27,6 +27,12 @@ class ClassItemSeeder extends Seeder
                 'description' => 'Finished Good',
                 'created_at' => now(),
                 'updated_at' => now()
+            ],
+            [
+                'code' => 'WST',
+                'description' => 'Waste',
+                'created_at' => now(),
+                'updated_at' => now()
             ]
         ]);
         // $classitem = ClassItem::factory()->create([

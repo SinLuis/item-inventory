@@ -27,6 +27,7 @@ use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class MutationoutResource extends Resource
@@ -35,49 +36,65 @@ class MutationoutResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-cloud-arrow-up';
     protected static ?string $navigationGroup = 'Storages';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('document_number')->label(trans('Nomor Bukti Pengeluaran'))->required(),
-                DatePicker::make('document_date')->label(trans('Tanggal Keluar'))->native(false)->required(),
+                DatePicker::make('document_date')->label(trans('Tanggal Keluar'))->native(false)->closeonDateSelection()->required(),
 
-                Select::make('bbin') 
-                        ->label(trans('Search'))
-                        ->options(function () {
-                              return Bbin::query()
-                                ->get()
-                                ->mapWithKeys(function ($bbin) {
-                                    if($bbin != null){
-                                        return [
-                                            $bbin->id => 'PIB: ' . $bbin->document_number . ' - ' . $bbin->item->code . ' - ' . $bbin->item_description . ' - ' . $bbin->total_quantity . ' ' . $bbin->item->uofm->code . ' - ' . $bbin->storage->storage
-                                        ]; 
-                                    }
-                                    else{
-                                        return null;
-                                    }
-                                    
-                                })
-                                ->toArray();
+                Select::make('bbin_id') 
+                ->label(trans('Daftar BB Masuk'))
+                ->options(function () {
+                    // Fetch all BBins
+                    $bbins = Bbin::query()->get();
+            
+                    // Log the retrieved BBins to see what's being fetched
+                    Log::info('BBins Retrieved:', $bbins->toArray());
+            
+                    // Check if the collection is empty
+                    if ($bbins->isEmpty()) {
+                        return []; // Return an empty array if no BBins are found
+                    }
+            
+                    // Map through the BBins and return the desired format
+                    return $bbins->mapWithKeys(function ($bbin) {
+                        // Check if the bbin is valid and has remaining quantity
+                        if ($bbin && $bbin->quantity_remaining > 0) {
+                            return [
+                                $bbin->id => 'PIB: ' . $bbin->document_number . 
+                                             ', No Seri: ' . $bbin->seri_number . 
+                                             ', ' . $bbin->item->description . 
+                                             ', Jumlah: ' . $bbin->quantity_remaining . 
+                                             ' ' . $bbin->item->uofm->code . 
+                                             ' - Gudang: ' . $bbin->storage->storage
+                            ]; 
+                        }
+            
+                        return []; // Return an empty array for invalid bbins
+                    })->toArray();
                         })
                         ->searchable()
                         ->required()->reactive()->afterStateUpdated(function (callable $set, $state) {
                             $bbin = Bbin::find($state); 
                            
                             if ($bbin) {
-                                $set('bbin_num', $bbin->document_number);
-                                $set('bbin_seri', $bbin->seri_number);
-                                $set('item_id', $bbin->item->code);
+                                $set('pib_number', $bbin->document_number);
+                                $set('seri_number', $bbin->seri_number);
+                                $set('item_id', $bbin->item_id);
+                                $set('item_code', $bbin->item->code);
                                 $set('item_description', $bbin->item->description);
                                 $set('item_uofm', $bbin->item->uofm->code);
                                 $set('storagesout_id', $bbin->storages_id);
                                 $set('storagesout_desc', $bbin->storage->storage);
                     
                             } else {
-                                $set('bbin_num', null);
-                                $set('bbin_seri', null);
+                                $set('pib_number', null);
+                                $set('seri_number', null);
                                 $set('item_id', null);
+                                $set('item_code', null);
                                 $set('item_description', null);
                                 $set('item_uofm', null);
                                 $set('storagesout_id', null);
@@ -86,9 +103,10 @@ class MutationoutResource extends Resource
                             
                         }),
 
-                        TextInput::make('bbin_num')->label(trans('PIB'))->readOnly(),
-                        TextInput::make('bbin_seri')->label(trans('No Seri'))->readOnly(),
-                        TextInput::make('item_id')->label(trans('Kode Barang'))->readOnly(),
+                        TextInput::make('pib_number')->label(trans('PIB'))->readOnly(),
+                        TextInput::make('seri_number')->label(trans('No Seri'))->readOnly(),
+                        Hidden::make('item_id'),
+                        TextInput::make('item_code')->label(trans('Kode Barang'))->readOnly(),
                         TextInput::make('item_description')->label(trans('Nama Barang'))->readOnly(),
                         TextInput::make('item_uofm')->label(trans('Satuan'))->readOnly(),
                         Hidden::make('storagesout_id'),
@@ -109,6 +127,8 @@ class MutationoutResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('document_number')->sortable()->searchable()->toggleable(),
+                TextColumn::make('pib_number')->sortable()->searchable()->toggleable(),
+                TextColumn::make('seri_number')->sortable()->searchable()->toggleable(),
                 TextColumn::make('document_date')->sortable()->searchable()->toggleable(),
             ])
             ->filters([
@@ -116,10 +136,10 @@ class MutationoutResource extends Resource
                     ->form([
                         DatePicker::make('start_date')
                             ->label('Start Date')
-                            ->required(),
+                            ->required()->closeonDateSelection(),
                         DatePicker::make('end_date')
                             ->label('End Date')
-                            ->required(),
+                            ->required()->closeonDateSelection(),
                     ])
                     ->query(function (Builder $query, array $data) {
                         if (isset($data['start_date']) && isset($data['end_date'])) {
@@ -131,7 +151,7 @@ class MutationoutResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -21,16 +21,21 @@ class BbinExport implements FromCollection, WithHeadings, WithMapping, ShouldAut
 
     use Exportable;
     private $rowNumber = 0;
-    protected $columns = ['document_id','document_number', 'document_date', 'seri_number', 'reff_number', 'reff_date', 'item_id', 'item_description', 'item_uofm', 'total_container', 'total_quantity', 'currency_id', 'item_amount', 'storages_id', 'subkontrak_id', 'supplier_id', 'country_id']; // Define the columns you want to export
-
+    private $records;
+    protected $columns = ['document_id','document_number', 'document_date', 'seri_number', 'reff_number', 'reff_date', 'item_id', 'item_description', 'item_uofm', 'total_container', 'total_quantity', 'currency_id', 'item_amount', 'storages_id', 'subkontrak_id', 'supplier_id', 'country_id', 'kurs']; // Define the columns you want to export
     /**
     * @return \Illuminate\Support\Collection
     */
     
+    public function __construct(array $records)
+    {
+        $this->records = $records;
+    }
 
     public function collection()
     {
-        return Bbin::select($this->columns)->get();
+        // return Bbin::select($this->columns)->get();
+        return Bbin::whereIn('id', $this->records)->get();
         
         $emptyRow = collect([['', '']]); // Adjust number of empty cells based on your columns
         return $emptyRow->merge($data);
@@ -52,7 +57,9 @@ class BbinExport implements FromCollection, WithHeadings, WithMapping, ShouldAut
             'Jumlah Kontainer',
             'Jumlah Total',
             'Mata Uang',
-            'Nilai Barang',
+            'Nilai Barang Ori',
+            'Kurs',
+            'Nilai Barang IDR',
             'Gudang',
             'Penerima Subkontrak',
             'Pemasok Pengirim',
@@ -79,7 +86,9 @@ class BbinExport implements FromCollection, WithHeadings, WithMapping, ShouldAut
             $bbin->total_container,
             $bbin->total_quantity,
             $bbin->currency->currency,
-            $bbin->item_amount,
+            number_format($bbin->item_amount, 2, ',', '.'),
+            number_format($bbin->kurs, 2, ',', '.'),
+            number_format($bbin->item_amount * $bbin->kurs, 2, ',', '.'),
             $bbin->storage->storage,
             $bbin->subsupplier->supplier_name ?? 'Nihil',
             $bbin->supsupplier->supplier_name,
@@ -98,15 +107,15 @@ class BbinExport implements FromCollection, WithHeadings, WithMapping, ShouldAut
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                // Merge cells from A1 to R1
-                $sheet->mergeCells('A1:R1');
+                // Merge cells from A1 to T1
+                $sheet->mergeCells('A1:T1');
 
                 // Set the value of the merged cell
                 $sheet->setCellValue('A1', 'BB Masuk');
 
                 // Optionally apply some styling
                 // 1 Open
-                $sheet->getStyle('A1:R1')->applyFromArray([
+                $sheet->getStyle('A1:T1')->applyFromArray([
                     'font' => [
                         'bold' => true,
                         'size' => 14,
@@ -119,7 +128,7 @@ class BbinExport implements FromCollection, WithHeadings, WithMapping, ShouldAut
                 // 1 Close
 
                 // 2 Open
-                $sheet->getStyle('A2:R2')->applyFromArray([
+                $sheet->getStyle('A2:T2')->applyFromArray([
                     'font' => [
                         'bold' => true,
                         'size' => 10,

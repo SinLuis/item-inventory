@@ -28,6 +28,7 @@ use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class HpinResource extends Resource
@@ -42,59 +43,76 @@ class HpinResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('document_number')->label(trans('Nomor Surat'))->required(),
-                DatePicker::make('document_date')->label(trans('Tanggal Surat'))->native(false)->required(),
+                TextInput::make('document_number')->label(trans('Nomor Invoice'))->required(),
+                DatePicker::make('document_date')->label(trans('Tanggal Invoice'))->native(false)->closeonDateSelection()->required(),
                 
-                Select::make('bbout') 
+                Select::make('bbout_id') 
                         ->label(trans('Daftar WIP'))
                         ->options(function () {
-                              return Bbout::query()
-                                ->get()
-                                ->mapWithKeys(function ($bbout) {
-                                    if($bbout != null){
-                                        return [
-                                            $bbout->id => 'PIB: ' . $bbout->bbin_num . ', No Seri: ' . $bbout->bbin_seri . ', ' . $bbout->fg_description . ', Jumlah: ' . $bbout->use_quantity . ' ' . $bbout->item_uofm 
-                                        ]; 
-                                    }
-                                    else{
-                                        return null;
-                                    }
-                                    
-                                })
-                                ->toArray();
+                            $bbout = Bbout::query()->get();
+
+                            // Log the retrieved BBins to see what's being fetched
+                            Log::info('BBOut Retrieved:', $bbout->toArray());
+        
+                            // Check if the collection is empty
+                            if ($bbout->isEmpty()) {
+                                return []; // Return an empty array if no BBins are found
+                            }
+        
+                            // Map through the BBins and return the desired format
+                            return $bbout->mapWithKeys(function ($bbout) {
+                                // Check if the bbin is valid and has remaining quantity
+                                if ($bbout && $bbout->quantity_remaining > 0) {
+                                    return [
+                                        $bbout->id => 'PIB: ' . $bbout->pib_number . 
+                                                    ', No Seri: ' . $bbout->seri_number . 
+                                                    ', ' . $bbout->item_id .
+                                                    ' ' . $bbout->item_description . 
+                                                    ', Jumlah: ' . $bbout->quantity_remaining . 
+                                                    ' ' . $bbout->item_uofm 
+                                                    // ' - Gudang: ' . $bbout->storage->storage
+                                    ]; 
+                                }
+        
+                                return []; // Return an empty array for invalid bbins
+                            })->toArray();
                         })
                         ->searchable()
                         ->reactive()->afterStateUpdated(function (callable $set, $state) {
                             $bbout = Bbout::find($state); 
                             
                             if ($bbout) {
-                                $set('item_id', $bbout->item->code);
+                                $set('item_id', $bbout->item->id);
+                                $set('item_code', $bbout->item->code);
                                 $set('item_description', $bbout->fg_description);
                                 $set('item_uofm', $bbout->item_uofm);
-                                $set('bbin_num', $bbout->bbin_num);
-                                $set('seri_num', $bbout->bbin_seri);
+                                $set('pib_number', $bbout->pib_number);
+                                $set('seri_number', $bbout->seri_number);
                                 // $set('produce_quantity', $bbout->use_quantity);
                                 $set('sub_quantity', $bbout->sub_quantity);
                                 
                             
                             } else {
                                 $set('item_id', null);
+                                $set('item_code', null);
                                 $set('item_description', null);
                                 $set('item_uofm', null);
-                                $set('bbin_num', null);
-                                $set('seri_num', null);
+                                $set('pib_number', null);
+                                $set('seri_number', null);
                                 // $set('produce_quantity', null);
                                 $set('sub_quantity', null);
                             }
                             
                         }),
-                        TextInput::make('item_id')->label(trans('Kode Barang'))->readOnly(),
+                        Hidden::make('item_id'),
+                        TextInput::make('item_code')->label(trans('Kode Barang'))->readOnly(),
                         TextInput::make('item_description')->label(trans('Nama Barang'))->readOnly(),
                         TextInput::make('item_uofm')->label(trans('Satuan'))->readOnly(),
-                        TextInput::make('bbin_num')->label(trans('No PIB'))->readOnly()->required(),
-                        TextInput::make('seri_num')->label(trans('No Seri'))->readOnly(),
+                        TextInput::make('pib_number')->label(trans('No PIB'))->readOnly()->required(),
+                        TextInput::make('seri_number')->label(trans('No Seri'))->readOnly(),
                         TextInput::make('produce_quantity')->label(trans('Jumlah dari Produksi')),
-                        TextInput::make('sub_quantity')->label(trans('Jumlah dari Subkontrak'))->readOnly(),
+                        //  Hidden::make('quantity_remaining'),
+                        TextInput::make('sub_quantity')->label(trans('Jumlah dari Subkontrak')),
                         Select::make('storages_id')->relationship('storage', 'storage')->label(trans('Gudang'))->preload()->required(),
                         Hidden::make('user_id')->default(auth()->id()),
                         TextInput::make('user_name')
@@ -126,18 +144,24 @@ class HpinResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('document_number')->sortable()->searchable()->toggleable(),
-                TextColumn::make('document_date')->sortable()->searchable()->toggleable(),
+                TextColumn::make('document_number')->label('Nomor Surat')->sortable()->searchable()->toggleable(),
+                TextColumn::make('document_date')->label('Tanggal Surat')->sortable()->searchable()->toggleable(),
+                TextColumn::make('item_id')->label('Kode Barang')->sortable()->searchable()->toggleable(),
+                TextColumn::make('item_description')->label('Nama Barang')->sortable()->searchable()->toggleable(),
+                TextColumn::make('item_uofm')->label('Satuan')->sortable()->searchable()->toggleable(),
+                TextColumn::make('produce_quantity')->label('Jumlah dari Produksi')->sortable()->searchable()->toggleable(),
+                TextColumn::make('sub_quantity')->label('Jumlah dari Subkontrak')->sortable()->searchable()->toggleable(),
+                TextColumn::make('storage.storage')->label('Gudang')->sortable()->searchable()->toggleable(),
             ])
             ->filters([
                 Filter::make('document_date_range')
                     ->form([
                         DatePicker::make('start_date')
                             ->label('Start Date')
-                            ->required(),
+                            ->required()->closeonDateSelection(),
                         DatePicker::make('end_date')
                             ->label('End Date')
-                            ->required(),
+                            ->required()->closeonDateSelection(),
                     ])
                     ->query(function (Builder $query, array $data) {
                         if (isset($data['start_date']) && isset($data['end_date'])) {
@@ -149,15 +173,17 @@ class HpinResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
                     BulkAction::make('export')
-                    ->label('Export to Excel')
-                    ->action(fn () => Excel::download(new HpinExport, 'Hpin.xlsx'))
-                    ->requiresConfirmation(),
+                        ->label('Export to Excel')
+                        ->action(function ($records) {
+                            $recordIds = $records->pluck('id')->toArray(); // Extract only the IDs
+                            return Excel::download(new HpinExport($recordIds), 'Hasil Produksi Masuk.xlsx');
+                        })
+                        ->requiresConfirmation(),
                 ])->label('Export'),
             ]);
     }

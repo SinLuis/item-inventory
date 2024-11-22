@@ -35,6 +35,11 @@ class Supplier extends Model
         return $this->hasMany(Bbout::class);
     }
 
+    public function subkontrak()
+    {
+        return $this->hasMany(Subkontrak::class);
+    }
+
     protected $table = 'suppliers';
     // protected $primaryKey = 'supplier_name';
 }

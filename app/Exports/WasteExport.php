@@ -18,13 +18,21 @@ use Maatwebsite\Excel\Events\AfterSheet;
 class WasteExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell
 {
     private $rowNumber = 0;
+    private $records;
     protected $columns = ['document_number', 'document_date', 'item_id', 'item_description', 'item_uofm', 'total_quantity', 'item_amount'];
     /**
     * @return \Illuminate\Support\Collection
     */
+
+    public function __construct(array $records)
+    {
+        $this->records = $records;
+    }
+
     public function collection()
     {
-        return Waste::select($this->columns)->get();
+        // return Waste::select($this->columns)->get();
+        return Waste::whereIn('id', $this->records)->get();
         
         $emptyRow = collect([['', '']]); // Adjust number of empty cells based on your columns
         return $emptyRow->merge($data);

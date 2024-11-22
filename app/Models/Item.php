@@ -50,5 +50,18 @@ class Item extends Model
         return $this->hasMany(Hpout::class);
     }
     
- 
+    public function waste()
+    {
+        return $this->hasMany(Bbin::class);
+    }
+    
+    public function subkontrak()
+    {
+        return $this->hasMany(Subkontrak::class);
+    }
+
+    public function stockcard()
+    {
+        return $this->hasMany(Stockcard::class);
+    }
 }

@@ -15,9 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('document_number');
             $table->date('document_date');
-            $table->string('bbin_num');
-            $table->string('bbin_seri');
-            $table->string('item_id');
+            $table->unsignedBigInteger('mutationout_id')->nullable();
+            $table->foreign('mutationout_id')->references('id')->on('mutationouts');
+            $table->integer('bbin_id');
+            $table->string('pib_number');
+            $table->string('seri_number');
+            $table->unsignedBigInteger('item_id');
+            $table->foreign('item_id')->references('id')->on('items');
+            $table->string('item_code');
             $table->string('item_description');
             $table->string('item_uofm');
             $table->unsignedBigInteger('storagesout_id')->nullable();

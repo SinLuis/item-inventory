@@ -20,14 +20,22 @@ class BboutExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
 
     use Exportable;
     private $rowNumber = 0;
+    private $records;
     protected $columns = ['document_number', 'document_date', 'item_id', 'item_description', 'item_uofm', 'use_quantity', 'sub_quantity', 'subkontrak_id','notes'];
 
     /**
     * @return \Illuminate\Support\Collection
     */
+
+    public function __construct(array $records)
+    {
+        $this->records = $records;
+    }
+
     public function collection()
     {
-        return Bbout::select($this->columns)->get();
+        // return Bbout::select($this->columns)->get();
+        return Bbout::whereIn('id', $this->records)->get();
         
         $emptyRow = collect([['', '']]); // Adjust number of empty cells based on your columns
         return $emptyRow->merge($data);

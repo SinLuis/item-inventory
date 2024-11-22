@@ -15,13 +15,20 @@ return new class extends Migration
             $table->id();
             $table->string('document_number');
             $table->date('document_date');
-            $table->string('bbin_num');
-            $table->string('bbin_seri');
-            $table->string('item_id');
+            $table->string('pib_number');
+            $table->string('seri_number');
+            $table->unsignedBigInteger('bbout_id');
+            $table->foreign('bbout_id')->references('id')->on('items');
+            $table->unsignedBigInteger('item_id');
+            $table->foreign('item_id')->references('id')->on('items');
+            $table->string('item_code');
             $table->string('item_description');
             $table->string('item_uofm');
             $table->integer('total_quantity');
             $table->integer('item_amount');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->string('user_name');
             $table->timestamps();
         });
     }

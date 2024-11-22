@@ -29,6 +29,11 @@ class Storage extends Model
         return $this->hasMany(MutationOut::class);
     }
 
+    public function stockcard()
+    {
+        return $this->hasMany(Stockcard::class);
+    }
+
 
     protected $table = 'storages';
 }

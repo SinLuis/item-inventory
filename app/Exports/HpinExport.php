@@ -19,14 +19,22 @@ class HpinExport implements FromCollection, WithHeadings, WithMapping, ShouldAut
 {
     use Exportable;
     private $rowNumber = 0;
+    private $records;
     protected $columns = ['document_number', 'document_date', 'item_id', 'item_description', 'produce_quantity', 'sub_quantity', 'storages_id'];
 
     /**
     * @return \Illuminate\Support\Collection
     */
+
+    public function __construct(array $records)
+    {
+        $this->records = $records;
+    }
+
     public function collection()
     {
-        return Hpin::select($this->columns)->get();
+        // return Hpin::select($this->columns)->get();
+        return Hpin::whereIn('id', $this->records)->get();
         
         $emptyRow = collect([['', '']]); // Adjust number of empty cells based on your columns
         return $emptyRow->merge($data);

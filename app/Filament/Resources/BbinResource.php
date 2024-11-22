@@ -44,10 +44,10 @@ class BbinResource extends Resource
             ->schema([
                 Select::make('document_id')->relationship('document', 'code')->label(trans('Jenis Dokumen'))->preload()->required(),
                 TextInput::make('document_number')->label(trans('Nomor Dokumen'))->required(),
-                DatePicker::make('document_date')->label(trans('Tanggal Dokumen'))->native(false)->required(),
+                DatePicker::make('document_date')->label(trans('Tanggal Dokumen'))->native(false)->closeonDateSelection()->required(),
                 TextInput::make('seri_number')->label(trans('No. Seri Barang'))->required(),
                 TextInput::make('reff_number')->label(trans('No. Surat'))->required(),
-                DatePicker::make('reff_date')->label(trans('Tanggal Surat'))->native(false)->required(),
+                DatePicker::make('reff_date')->label(trans('Tanggal Surat'))->native(false)->closeonDateSelection()->required(),
                 Select::make('item_id')->relationship('item', 'code', function(Builder $query){
                     return $query->where('class_id', 1);
                 })->label(trans('Item ID'))->required()->searchable()->preload()->reactive()
@@ -67,8 +67,12 @@ class BbinResource extends Resource
                 TextInput::make('item_longdescription')->label(trans('Deskripsi'))->readOnly(),
                 TextInput::make('item_uofm')->label(trans('Satuan Item'))->readOnly(),
                 TextInput::make('total_container')->label('Jumlah Kontainer')->numeric()->required()->rule('numeric'),
-                TextInput::make('total_quantity')->label('Jumlah Quantity')->numeric()->required()->rule('numeric'),
+                TextInput::make('total_quantity')->label('Jumlah Quantity')->numeric()->required()->rule('numeric')->afterStateUpdated(function ($state, callable $set) {
+                   $set('quantity_remaining', $state);
+                }),
+                Hidden::make('quantity_remaining'),
                 Select::make('currency_id')->relationship('currency', 'currency')->label(trans('Mata Uang'))->preload()->required(),
+                TextInput::make('kurs')->label('Kurs')->numeric()->required()->rule('numeric')->default(1),
                 TextInput::make('item_amount')->label('Nilai Barang')->numeric()->required()->rule('numeric'),
                 Select::make('storages_id')->relationship('storage', 'storage')->label(trans('Gudang'))->preload()->required(),
                 Select::make('subkontrak_id')->relationship('subsupplier', 'supplier_name', function(Builder $query){
@@ -112,18 +116,28 @@ class BbinResource extends Resource
                 TextColumn::make('document_number')->label('Nomor Dok')->sortable()->searchable()->toggleable(),
                 TextColumn::make('document_date')->label('Tanggal Dok')->sortable()->searchable()->toggleable(),
                 TextColumn::make('seri_number')->label('No Seri')->sortable()->searchable()->toggleable(),
-                TextColumn::make('reff_number')->label('Nomor Surat')->sortable()->searchable()->toggleable(),
-                TextColumn::make('reff_date')->label('Tanggal Surat')->sortable()->searchable()->toggleable(),
+                TextColumn::make('reff_number')->label('Nomor Invoice')->sortable()->searchable()->toggleable(),
+                TextColumn::make('reff_date')->label('Tanggal Invoice')->sortable()->searchable()->toggleable(),
+                TextColumn::make('item.code')->label('Kode Barang')->sortable()->searchable()->toggleable(),
+                TextColumn::make('item_description')->label('Nama Barang')->sortable()->searchable()->toggleable(),
+                TextColumn::make('item_uofm')->label('Satuan')->sortable()->searchable()->toggleable(),
+                TextColumn::make('total_container')->label('Jumlah Container')->sortable()->searchable()->toggleable(),
+                TextColumn::make('currency.currency')->label('Mata Uang')->sortable()->searchable()->toggleable(),
+                TextColumn::make('item_amount')->label('Nilai Barang')->sortable()->searchable()->toggleable(),
+                TextColumn::make('storage.storage')->label('Gudang')->sortable()->searchable()->toggleable(),
+                TextColumn::make('subsupplier.supplier_name')->label('Penerima Subkontrak')->sortable()->searchable()->toggleable(),
+                TextColumn::make('supsupplier.supplier_name')->label('Pemasok Pengirim')->sortable()->searchable()->toggleable(),
+                TextColumn::make('country.country')->label('Negara Asal')->sortable()->searchable()->toggleable(),
             ])
             ->filters([
                 Filter::make('document_date_range')
                     ->form([
                         DatePicker::make('start_date')
                             ->label('Start Date')
-                            ->required(),
+                            ->required()->closeonDateSelection(),
                         DatePicker::make('end_date')
                             ->label('End Date')
-                            ->required(),
+                            ->required()->closeonDateSelection(),
                     ])
                     ->query(function (Builder $query, array $data) {
                         if (isset($data['start_date']) && isset($data['end_date'])) {
@@ -136,15 +150,17 @@ class BbinResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
                     BulkAction::make('export')
-                    ->label('Export to Excel')
-                    ->action(fn () => Excel::download(new BbinExport, 'Bbin.xlsx'))
-                    ->requiresConfirmation(),
+                        ->label('Export to Excel')
+                        ->action(function ($records) {
+                            $recordIds = $records->pluck('id')->toArray(); // Extract only the IDs
+                            return Excel::download(new BbinExport($recordIds), 'Bahan Baku Masuk.xlsx');
+                        })
+                        ->requiresConfirmation(),
                 ])->label('Export'),
             ]);
     }

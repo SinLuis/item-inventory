@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('item_uofm');
             $table->integer('total_container');
             $table->integer('total_quantity');
+            $table->integer('quantity_remaining');
             $table->unsignedBigInteger('currency_id');
             $table->foreign('currency_id')->references('id')->on('currencies');
             $table->integer('item_amount');
@@ -38,6 +39,7 @@ return new class extends Migration
             $table->foreign('supplier_id')->references('id')->on('suppliers');
             $table->unsignedBigInteger('country_id');
             $table->foreign('country_id')->references('id')->on('countries');
+            $table->integer('kurs');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('user_name');
