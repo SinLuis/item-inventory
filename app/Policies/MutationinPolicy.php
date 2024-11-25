@@ -37,7 +37,7 @@ class MutationinPolicy
      */
     public function update(User $user, Mutationin $mutationin): bool
     {
-        return $user->hasRole('Admin');
+        return false;
     }
 
     /**
@@ -45,7 +45,7 @@ class MutationinPolicy
      */
     public function delete(User $user, Mutationin $mutationin): bool
     {
-        return $user->hasRole('Admin');
+        return false;
     }
 
     /**

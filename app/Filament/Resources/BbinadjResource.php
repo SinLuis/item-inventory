@@ -94,7 +94,7 @@ class BbinadjResource extends Resource
                 TextInput::make('pib_number')->label(trans('No Dok PIB'))->readOnly(),
                 TextInput::make('seri_number')->label(trans('Seri Barang'))->readOnly(),
                 TextInput::make('qty_before')->label(trans('Qty Before'))->readOnly(),
-                TextInput::make('qty_after')->label(trans('Qty After')),
+                TextInput::make('qty_after')->label(trans('Qty After'))->rule('min:0'),
                 TextInput::make('notes')->label(trans('Remark')),
                 DatePicker::make('adjust_date')->label(trans('Tanggal Penyesuaian'))->native(false)->required(),
                 Hidden::make('user_id')->default(auth()->id()),

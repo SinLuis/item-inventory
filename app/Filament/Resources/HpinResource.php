@@ -66,10 +66,10 @@ class HpinResource extends Resource
                                     return [
                                         $bbout->id => 'PIB: ' . $bbout->pib_number . 
                                                     ', No Seri: ' . $bbout->seri_number . 
-                                                    ', ' . $bbout->item_id .
-                                                    ' ' . $bbout->item_description . 
+                                                    ', ' . $bbout->item->code .
+                                                    ' ' . $bbout->fg_description . 
                                                     ', Jumlah: ' . $bbout->quantity_remaining . 
-                                                    ' ' . $bbout->item_uofm 
+                                                    ' ' . $bbout->item->uofm->code 
                                                     // ' - Gudang: ' . $bbout->storage->storage
                                     ]; 
                                 }
@@ -110,9 +110,9 @@ class HpinResource extends Resource
                         TextInput::make('item_uofm')->label(trans('Satuan'))->readOnly(),
                         TextInput::make('pib_number')->label(trans('No PIB'))->readOnly()->required(),
                         TextInput::make('seri_number')->label(trans('No Seri'))->readOnly(),
-                        TextInput::make('produce_quantity')->label(trans('Jumlah dari Produksi')),
+                        TextInput::make('produce_quantity')->label(trans('Jumlah dari Produksi'))->required()->rule('min:0'),
                         //  Hidden::make('quantity_remaining'),
-                        TextInput::make('sub_quantity')->label(trans('Jumlah dari Subkontrak')),
+                        TextInput::make('sub_quantity')->label(trans('Jumlah dari Subkontrak'))->rule('min:0'),
                         Select::make('storages_id')->relationship('storage', 'storage')->label(trans('Gudang'))->preload()->required(),
                         Hidden::make('user_id')->default(auth()->id()),
                         TextInput::make('user_name')

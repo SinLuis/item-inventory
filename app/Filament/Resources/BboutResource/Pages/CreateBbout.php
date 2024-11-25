@@ -23,6 +23,13 @@ class CreateBbout extends CreateRecord
         $data = $this->data;
         // dd($data['bbin']);
         $bbin = Bbin::find($data['bbin_id']);
+        if ($data['use_quantity'] == 0 && $data['sub_quantity'] == 0){
+            Notification::make()
+            ->title('Use Quantity and Sub Quantity can\'t be both 0')
+            ->danger() // Use danger() for error notifications
+            ->send();
+            $this->halt();
+        }
         if ($data['use_quantity'] + $data['sub_quantity'] > $bbin->quantity_remaining) {
             Notification::make()
             ->title('The Maximum Quantity is ' . $bbin->quantity_remaining)

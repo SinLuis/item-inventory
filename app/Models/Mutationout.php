@@ -102,7 +102,7 @@ class Mutationout extends Model
 
     public function storagein()
     {
-        return $this->belongsTo(Storage::class);
+        return $this->belongsTo(Storage::class, 'storagesin_id');
     }
 
     public function storageout()

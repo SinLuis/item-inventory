@@ -37,7 +37,7 @@ class HpinPolicy
      */
     public function update(User $user, Hpin $hpin): bool
     {
-        return $user->hasRole('Admin');
+        return false;
     }
 
     /**
@@ -45,7 +45,7 @@ class HpinPolicy
      */
     public function delete(User $user, Hpin $hpin): bool
     {
-        return $user->hasRole('Admin');
+        return false;
     }
 
     /**

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('transaction_type'); // 1 : Masuk, 2: Keluar
             $table->unsignedBigInteger('item_id');
             $table->foreign('item_id')->references('id')->on('items');
-            $table->integer('total_quantity');
+            $table->decimal('total_quantity', 12, 4);
             $table->unsignedBigInteger('storages_id');
             $table->foreign('storages_id')->references('id')->on('storages');
             $table->unsignedBigInteger('user_id');

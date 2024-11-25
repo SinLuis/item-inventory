@@ -23,6 +23,13 @@ class CreateBbinadj extends CreateRecord
         $data = $this->data;
         // dd($data['bbin']);
         $bbin = Bbin::find($data['bbin_id']);
+        if ($data['qty_after'] == $data['qty_before']){
+            Notification::make()
+            ->title('The quantity after must not be the same as the quantity before')
+            ->danger() // Use danger() for error notifications
+            ->send();
+            $this->halt();
+        }
         if ($data['qty_after'] < ($bbin->total_quantity - $bbin->quantity_remaining)) {
             Notification::make()
             ->title('The Quantity After must be at least ' . $bbin->total_quantity - $bbin->quantity_remaining)

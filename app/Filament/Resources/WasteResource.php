@@ -110,11 +110,13 @@ class WasteResource extends Resource
                             $item = Item::find($state);
                             if ($item) {
                                 $set('item_id', $item->id);
+                                $set('item_code', $item->code);
                                 $set('item_description', $item->description);
                                 $set('item_longdescription', $item->long_description);
                                 $set('item_uofm', $item->uofm->code);
                             } else {
                                 $set('item_id', null);
+                                $set('item_code', null);
                                 $set('item_description', null);
                                 $set('item_longdescription', null);
                                 $set('item_uofm', null);
@@ -123,10 +125,11 @@ class WasteResource extends Resource
 
                         // TextInput::make('item_id')->label(trans('Kode Barang')),
                         Hidden::make('item_id'),
+                        Hidden::make('item_code'),
                         TextInput::make('item_description')->label(trans('Nama Barang'))->readOnly(),
                         TextInput::make('item_uofm')->label(trans('Satuan'))->readOnly(),
-                        TextInput::make('total_quantity')->label('Jumlah')->numeric()->required()->rule('numeric'),
-                        TextInput::make('item_amount')->label('Nilai Barang')->numeric()->required()->rule('numeric'),
+                        TextInput::make('total_quantity')->label('Jumlah')->numeric()->required()->rule('numeric')->rule('gt:0'),
+                        TextInput::make('item_amount')->label('Nilai Barang')->numeric()->required()->rule('numeric')->rule('min:0'),
                         Hidden::make('user_id')->default(auth()->id()),
                         TextInput::make('user_name')
                         ->label(trans('User'))

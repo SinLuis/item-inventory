@@ -26,6 +26,7 @@ class Mutationin extends Model
         'storagesout_id',
         'storagesout_desc',
         'storagesin_id',
+        'storagesin_desc',
         'move_quantity',
         'notes',
         'user_id',
@@ -124,7 +125,7 @@ class Mutationin extends Model
 
     public function storagein()
     {
-        return $this->belongsTo(Storage::class);
+        return $this->belongsTo(Storage::class, 'storagesin_id');
     }
 
     public function storageout()

@@ -37,7 +37,7 @@ class BboutPolicy
      */
     public function update(User $user, Bbout $bbout): bool
     {
-        return $user->hasRole('Admin');
+        return false;
     }
 
     /**
@@ -45,7 +45,7 @@ class BboutPolicy
      */
     public function delete(User $user, Bbout $bbout): bool
     {
-        return $user->hasRole('Admin');
+        return false;
     }
 
     /**

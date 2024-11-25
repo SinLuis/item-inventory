@@ -75,6 +75,8 @@ class MutationinResource extends Resource
                         $set('item_uofm', $mutout->item_uofm);
                         $set('storagesout_id', $mutout->storagesout_id);
                         $set('storagesout_desc', $mutout->storagesout_desc);
+                        $set('storagesin_id', $mutout->storagesin_id);
+                        $set('storagesin_desc', $mutout->storagein->storage);
                     }
                             // dd($mutout);
                         }),
@@ -88,8 +90,10 @@ class MutationinResource extends Resource
                         TextInput::make('item_uofm')->label(trans('Satuan'))->readOnly(),
                         Hidden::make('storagesout_id'),
                         TextInput::make('storagesout_desc')->label('Gudang Asal')->readOnly(),
-                        Select::make('storagesin_id')->relationship('storagein', 'storage')->label(trans('Gudang Tujuan'))->required()->searchable()->preload()->reactive(),
-                        TextInput::make('move_quantity')->label('Jumlah Dipindahkan')->numeric()->required()->rule('numeric'),
+                        Hidden::make('storagesin_id')->label('Gudang Tujuan'),
+                        TextInput::make('storagesin_desc')->label('Gudang Asal')->readOnly(),
+                        // Select::make('storagesin_id')->relationship('storagein', 'storage')->label(trans('Gudang Tujuan'))->required()->searchable()->preload()->reactive(),
+                        TextInput::make('move_quantity')->label('Jumlah Dipindahkan')->numeric()->required()->rule('numeric')->rule('gt:0'),
                         TextInput::make('notes')->label(trans('Keterangan Lain')),
                         Hidden::make('user_id')->default(auth()->id()),
                         TextInput::make('user_name')
@@ -128,7 +132,24 @@ class MutationinResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()
+                ->form(fn () => [
+                    Forms\Components\Grid::make(2) // 2 columns
+                        ->schema([
+                            TextInput::make('document_number')->label(trans('Nomor Bukti Pengeluaran'))->readOnly(),
+                            DatePicker::make('document_date')->label(trans('Tanggal Keluar'))->readOnly(),
+                            TextInput::make('pib_number')->label(trans('PIB'))->readOnly(),
+                            TextInput::make('seri_number')->label(trans('No Seri'))->readOnly(),
+                            TextInput::make('item_code')->label(trans('Kode Barang'))->readOnly(),
+                            TextInput::make('item_description')->label(trans('Nama Barang'))->readOnly(),
+                            TextInput::make('item_uofm')->label(trans('Satuan'))->readOnly(),
+                            TextInput::make('storagesout_desc')->label('Gudang Asal')->readOnly(),
+                            TextInput::make('storagesin_desc')->label('Gudang Tujuan')->readOnly(),
+                            TextInput::make('move_quantity')->label('Jumlah Dipindahkan')->numeric()->readOnly(),
+                            TextInput::make('notes')->label(trans('Keterangan Lain'))->readOnly(),
+                            TextInput::make('user_name')->label(trans('User'))->readOnly(),
+                        ]),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -24,9 +24,9 @@ return new class extends Migration
             $table->string('item_uofm');
             $table->string('pib_number');
             $table->string('seri_number');
-            $table->string('produce_quantity');
-            $table->integer('quantity_remaining');
-            $table->string('sub_quantity')->nullable();
+            $table->decimal('produce_quantity', 12, 4);
+            $table->decimal('quantity_remaining', 12, 4);
+            $table->decimal('sub_quantity', 12, 4)->nullable();
             $table->unsignedBigInteger('storages_id');
             $table->foreign('storages_id')->references('id')->on('storages');
             $table->unsignedBigInteger('user_id');

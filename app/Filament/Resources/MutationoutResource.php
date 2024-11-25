@@ -112,7 +112,7 @@ class MutationoutResource extends Resource
                         Hidden::make('storagesout_id'),
                         TextInput::make('storagesout_desc')->label('Gudang Asal')->readOnly(),
                         Select::make('storagesin_id')->relationship('storagein', 'storage')->label(trans('Gudang Tujuan'))->required()->searchable()->preload()->reactive(),
-                        TextInput::make('move_quantity')->label('Jumlah Dipindahkan')->numeric()->required()->rule('numeric'),
+                        TextInput::make('move_quantity')->label('Jumlah Dipindahkan')->numeric()->required()->rule('numeric')->rule('gt:0'),
                         TextInput::make('notes')->label(trans('Keterangan Lain')),
                         Hidden::make('user_id')->default(auth()->id()),
                         TextInput::make('user_name')

@@ -37,7 +37,7 @@ class BbinadjPolicy
      */
     public function update(User $user, Bbinadj $bbinadj): bool
     {
-        return $user->hasRole('Admin');
+        return false;
     }
 
     /**
@@ -45,7 +45,7 @@ class BbinadjPolicy
      */
     public function delete(User $user, Bbinadj $bbinadj): bool
     {
-        return $user->hasRole('Admin');
+        return false;
     }
 
     /**

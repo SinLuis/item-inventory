@@ -88,7 +88,6 @@ class StockcardResource extends Resource
                             ]);
                         }
                     }),
-                    
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),

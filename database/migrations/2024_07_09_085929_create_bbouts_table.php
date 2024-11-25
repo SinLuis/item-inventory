@@ -25,9 +25,9 @@ return new class extends Migration
             $table->string('item_description');
             $table->string('item_uofm');
             $table->string('subkontrak_name')->nullable();
-            $table->integer('use_quantity')->nullable();
-            $table->integer('quantity_remaining');
-            $table->integer('sub_quantity')->nullable() ;
+            $table->decimal('use_quantity', 12, 4)->nullable();
+            $table->decimal('quantity_remaining', 12, 4);
+            $table->decimal('sub_quantity', 12, 4)->nullable() ;
             $table->unsignedBigInteger('subkontrak_id')->nullable();
             $table->foreign('subkontrak_id')->references('id')->on('suppliers');
             $table->string('notes')->nullable();

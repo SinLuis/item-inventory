@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('item_uofm');
             $table->string('pib_number');
             $table->string('seri_number');
-            $table->integer('total_quantity');
+            $table->decimal('total_quantity', 12, 4);
             $table->unsignedBigInteger('subkontrak_id')->nullable();
             $table->foreign('subkontrak_id')->references('id')->on('suppliers');
             $table->unsignedBigInteger('user_id');

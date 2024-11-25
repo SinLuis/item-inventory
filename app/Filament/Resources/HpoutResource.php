@@ -89,6 +89,7 @@ class HpoutResource extends Resource
                         $set('item_id', $hpin->item_id);
                         $set('item_code', $hpin->item_code);
                         $set('item_description', $hpin->item_description);
+                        $set('item_longdescription', $hpin->item->long_description);
                         $set('item_uofm', $hpin->item_uofm);
                         $set('pib_number', $hpin->pib_number);
                         $set('seri_number', $hpin->seri_number);
@@ -109,14 +110,14 @@ class HpoutResource extends Resource
                 Hidden::make('item_id'),
                 TextInput::make('item_code')->label(trans('Kode Barang'))->readOnly(),
                 TextInput::make('item_description')->label(trans('Nama Barang'))->readOnly(),
-                TextInput::make('item_longdescription')->label(trans('Deskripsi')),
+                TextInput::make('item_longdescription')->label(trans('Deskripsi'))->readOnly(),
                 TextInput::make('item_uofm')->label(trans('Satuan'))->readOnly(),
                 TextInput::make('pib_number')->label(trans('No PIB'))->readOnly(),
                 TextInput::make('seri_number')->label(trans('No Seri'))->readOnly(),
-                TextInput::make('total_quantity')->label('Jumlah Quantity')->numeric()->required()->rule('numeric'),
+                TextInput::make('total_quantity')->label('Jumlah Quantity')->numeric()->required()->rule('numeric')->rule('gt:0'),
                 Select::make('currency_id')->relationship('currency', 'currency')->label(trans('Mata Uang'))->preload()->required(),
-                TextInput::make('item_amount')->label('Nilai Barang')->numeric()->required()->rule('numeric'),
-                TextInput::make('kurs')->label('Kurs')->numeric()->required()->rule('numeric')->default(1),
+                TextInput::make('item_amount')->label('Nilai Barang')->numeric()->required()->rule('numeric')->rule('min:0'),
+                TextInput::make('kurs')->label('Kurs')->numeric()->required()->rule('numeric')->default(1)->rule('gt:0'),
                 Hidden::make('user_id')->default(auth()->id()),
                 TextInput::make('user_name')
                 ->label(trans('User'))

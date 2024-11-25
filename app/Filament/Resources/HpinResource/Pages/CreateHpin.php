@@ -22,6 +22,13 @@ class CreateHpin extends CreateRecord
         $data = $this->data;
         // dd($data['bbin']);
         $bbout = Bbout::find($data['bbout_id']);
+        if ($data['produce_quantity'] == 0 && $data['sub_quantity'] == 0){
+            Notification::make()
+            ->title('Produce Quantity and Sub Quantity can\'t be both 0')
+            ->danger() // Use danger() for error notifications
+            ->send();
+            $this->halt();
+        }
         if ($data['produce_quantity'] + $data['sub_quantity'] > $bbout->quantity_remaining) {
             Notification::make()
             ->title('The Maximum Quantity is ' . $bbout->quantity_remaining)

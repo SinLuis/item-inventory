@@ -20,8 +20,8 @@ return new class extends Migration
             $table->foreign('bbin_id')->references('id')->on('bbins');
             $table->string('pib_number');
             $table->string('seri_number');
-            $table->integer('qty_before');
-            $table->integer('qty_after');
+            $table->decimal('qty_before', 12, 4);
+            $table->decimal('qty_after', 12, 4);
             $table->string('notes');
             $table->string('adjust_date');
             $table->unsignedBigInteger('user_id');

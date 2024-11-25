@@ -30,7 +30,8 @@ return new class extends Migration
             $table->unsignedBigInteger('storagesin_id')->nullable();
             $table->foreign('storagesin_id')->references('id')->on('storages');
             $table->string('storagesout_desc');
-            $table->integer('move_quantity');
+            $table->string('storagesin_desc');
+            $table->decimal('move_quantity', 12, 4);
             $table->string('notes')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

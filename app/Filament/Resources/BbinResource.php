@@ -67,13 +67,13 @@ class BbinResource extends Resource
                 TextInput::make('item_longdescription')->label(trans('Deskripsi'))->readOnly(),
                 TextInput::make('item_uofm')->label(trans('Satuan Item'))->readOnly(),
                 TextInput::make('total_container')->label('Jumlah Kontainer')->numeric()->required()->rule('numeric'),
-                TextInput::make('total_quantity')->label('Jumlah Quantity')->numeric()->required()->rule('numeric')->afterStateUpdated(function ($state, callable $set) {
+                TextInput::make('total_quantity')->label('Jumlah Quantity')->numeric()->required()->rule('numeric')->rule('gt:0')->afterStateUpdated(function ($state, callable $set) {
                    $set('quantity_remaining', $state);
                 }),
                 Hidden::make('quantity_remaining'),
                 Select::make('currency_id')->relationship('currency', 'currency')->label(trans('Mata Uang'))->preload()->required(),
-                TextInput::make('kurs')->label('Kurs')->numeric()->required()->rule('numeric')->default(1),
-                TextInput::make('item_amount')->label('Nilai Barang')->numeric()->required()->rule('numeric'),
+                TextInput::make('kurs')->label('Kurs')->numeric()->required()->rule('numeric')->default(1)->rule('gt:0'),
+                TextInput::make('item_amount')->label('Nilai Barang')->numeric()->required()->rule('numeric')->rule('min:0'),
                 Select::make('storages_id')->relationship('storage', 'storage')->label(trans('Gudang'))->preload()->required(),
                 Select::make('subkontrak_id')->relationship('subsupplier', 'supplier_name', function(Builder $query){
                     return $query->where('class_id', 2);

@@ -24,7 +24,7 @@ class CreateHpout extends CreateRecord
         $hpin = Hpin::find($data['hpin_id']);
         if ($data['total_quantity'] > $hpin->quantity_remaining) {
             Notification::make()
-            ->title('The Quantity After must be at least ' . $hpin->quantity_remaining)
+            ->title('The Maximum Quantity is ' . $hpin->quantity_remaining)
             ->danger() // Use danger() for error notifications
             ->send();
             $this->halt();

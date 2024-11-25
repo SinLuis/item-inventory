@@ -37,7 +37,7 @@ class HpoutPolicy
      */
     public function update(User $user, Hpout $hpout): bool
     {
-        return $user->hasRole('Admin');
+        return false;
     }
 
     /**
@@ -45,7 +45,7 @@ class HpoutPolicy
      */
     public function delete(User $user, Hpout $hpout): bool
     {
-        return $user->hasRole('Admin');
+        return false;
     }
 
     /**
@@ -53,7 +53,7 @@ class HpoutPolicy
      */
     public function restore(User $user, Hpout $hpout): bool
     {
-        //
+        return false;
     }
 
     /**
