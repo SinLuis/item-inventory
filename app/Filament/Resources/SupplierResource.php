@@ -52,10 +52,10 @@ class SupplierResource extends Resource
                         })->live(onBlur:true)
                     
                     ,
-                    TextInput::make('address')->label(trans('Address'))->required(),
-                    TextInput::make('phone')->label(trans('Phone Number'))->numeric()->required(),
-                    TextInput::make('email')->label(trans('Email'))->email()->required()->unique(ignorable: fn($record) => $record),
-                    TextInput::make('pic')->label(trans('PIC'))->required()
+                    TextInput::make('address')->label(trans('Address')),
+                    TextInput::make('phone')->label(trans('Phone Number'))->numeric(),
+                    TextInput::make('email')->label(trans('Email'))->email()->unique(ignorable: fn($record) => $record),
+                    TextInput::make('pic')->label(trans('PIC'))
                 ])
 
                 ->columns(2)

@@ -33,7 +33,14 @@ class ClassItemSeeder extends Seeder
                 'description' => 'Waste',
                 'created_at' => now(),
                 'updated_at' => now()
-            ]
+            ],
+
+            [
+                'code' => 'PLS',
+                'description' => 'Plastik',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
         // $classitem = ClassItem::factory()->create([
         //     [
