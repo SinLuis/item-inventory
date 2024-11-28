@@ -64,7 +64,7 @@ class MutationoutResource extends Resource
                         // Check if the bbin is valid and has remaining quantity
                         if ($bbin && $bbin->quantity_remaining > 0) {
                             return [
-                                $bbin->id => 'PIB: ' . $bbin->document_number . 
+                                $bbin->id => $bbin->document->code . ': ' . $bbin->document_number . 
                                              ', No Seri: ' . $bbin->seri_number . 
                                              ', ' . $bbin->item->description . 
                                              ', Jumlah: ' . $bbin->quantity_remaining . 
@@ -154,9 +154,9 @@ class MutationoutResource extends Resource
                 Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

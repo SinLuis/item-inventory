@@ -69,7 +69,7 @@ class HpoutResource extends Resource
                         // Check if the bbin is valid and has remaining quantity
                         if ($hpin && $hpin->quantity_remaining > 0) {
                             return [
-                                $hpin->id => 'PIB: ' . $hpin->pib_number . 
+                                $hpin->id => $hpin->bbout->bbin->document->code . ': ' . $hpin->pib_number . 
                                             ', No Seri: ' . $hpin->seri_number . 
                                             ', ' . $hpin->item_description . 
                                             ', Jumlah: ' . $hpin->quantity_remaining . 

@@ -65,7 +65,7 @@ class WasteResource extends Resource
                                 // Check if the bbin is valid and has remaining quantity
                                 if ($bbout && $bbout->quantity_remaining > 0) {
                                     return [
-                                        $bbout->id => 'PIB: ' . $bbout->pib_number . 
+                                        $bbout->id => $bbout->bbin->document->code . ': ' . $bbout->pib_number . 
                                                     ', No Seri: ' . $bbout->seri_number . 
                                                     ', ' . $bbout->item_id .
                                                     ' ' . $bbout->item_description . 

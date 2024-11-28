@@ -42,6 +42,46 @@ class Mutationin extends Model
             $documentDate = Carbon::parse($mutationin->document_date); // Parsing tanggal
             $createDate = Carbon::parse($mutationin->created_at);
             $diffDays = $documentDate->diffInDays($createDate);
+            
+            if ($diffDays<2) {
+                $documentDate = $createDate;
+            }             
+            else {
+                if ($documentDate->isFriday()) {
+                    $documentDate->addDays(4);
+                } 
+                else if ($documentDate->isThursday()) {
+                    $documentDate->addDays(4); 
+                }                
+                else {
+                    $documentDate->addDays(2); 
+                }
+            }
+
+            Log::create([
+                'pib_number' => $mutationin->pib_number,
+                'seri_number' => $mutationin->seri_number,
+                'transaction_description' => 'Gudang Masuk',
+                'log_date' => $documentDate,
+                'user_id' => auth()->id(),
+                'user_name' => auth()->user()->name 
+                // Tambahkan field lain yang diperlukan
+            ]);
+
+            // Stockcard::create([
+            //     'pib_number' => $mutationin->pib_number,
+            //     'seri_number' => $mutationin->seri_number,
+            //     'document_date' => $mutationin->document_date,
+            //     'transaction_id' => $mutationin->id,
+            //     'transaction_description' =>'Gudang Masuk',
+            //     'transaction_type' => 1,
+            //     'item_id' => $mutationin->item_id,
+            //     'total_quantity' => $mutationin->move_quantity,
+            //     'storages_id' => $mutationin->storagesin_id,
+            //     'user_id' => auth()->id(),
+            //     'user_name' => auth()->user()->name 
+            // ]);
+
             Bbin::create([
                 'document_id' => $bbin->document_id,
                 'document_number' => $bbin->document_number,
@@ -68,45 +108,11 @@ class Mutationin extends Model
                 // Tambahkan field lain yang diperlukan
             ]);
 
-            if ($diffDays<2) {
-                $documentDate = $createDate;
-            }             
-            else {
-                if ($documentDate->isFriday()) {
-                    $documentDate->addDays(4);
-                } 
-                else if ($documentDate->isThursday()) {
-                    $documentDate->addDays(4); 
-                }                
-                else {
-                    $documentDate->addDays(2); 
-                }
-            }
+            
     
-            Log::create([
-                'pib_number' => $mutationin->pib_number,
-                'seri_number' => $mutationin->seri_number,
-                'transaction_description' => 'Gudang Masuk',
-                'log_date' => $documentDate,
-                'user_id' => auth()->id(),
-                'user_name' => auth()->user()->name 
-                // Tambahkan field lain yang diperlukan
-            ]);
+            
 
-            Stockcard::create([
-                'pib_number' => $mutationin->pib_number,
-                'seri_number' => $mutationin->seri_number,
-                'document_date' => $mutationin->document_date,
-                'transaction_id' => $mutationin->id,
-                'transaction_description' =>'Gudang Masuk',
-                'transaction_type' => 1,
-                'item_id' => $mutationin->item_id,
-                'total_quantity' => $mutationin->move_quantity,
-                'storages_id' => $mutationin->storagesin_id,
-                'user_id' => auth()->id(),
-                'user_name' => auth()->user()->name 
-                // Tambahkan field lain yang diperlukan
-            ]);
+            
         });
     }
 

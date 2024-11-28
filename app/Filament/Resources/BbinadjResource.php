@@ -55,7 +55,7 @@ class BbinadjResource extends Resource
                                 ->mapWithKeys(function ($bbin) {
                                     if($bbin != null){
                                         return [
-                                            $bbin->id => 'PIB: ' . $bbin->document_number . ', No Seri: ' . $bbin->seri_number . ', ' . $bbin->item->description . ', Quantity Remaining : ' . $bbin->quantity_remaining . ' ' . $bbin->item->uofm->code . ' - Gudang: ' . $bbin->storage->storage
+                                            $bbin->id => $bbin->document->code . ': ' . $bbin->document_number . ', No Seri: ' . $bbin->seri_number . ', ' . $bbin->item->description . ', Quantity Remaining : ' . $bbin->quantity_remaining . ' ' . $bbin->item->uofm->code . ' - Gudang: ' . $bbin->storage->storage
                                         ]; 
                                     }
                                     else{

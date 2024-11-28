@@ -42,7 +42,7 @@ class ItemSeeder extends Seeder
             [ 'uofm_id' => "1", 'class_id' => 2, 'code' => "FG-007.A", 'description' => "FISH OIL A", 'long_description' => "", 'created_at' => now(), 'updated_at' => now() ],
             [ 'uofm_id' => "1", 'class_id' => 2, 'code' => "FG-008", 'description' => "BIG EYE POUCH", 'long_description' => "", 'created_at' => now(), 'updated_at' => now() ],
             //Class ID 3 = WST
-            [ 'uofm_id' => "1", 'class_id' => 2, 'code' => "WST-001", 'description' => "WASTE", 'long_description' => "", 'created_at' => now(), 'updated_at' => now() ],
+            [ 'uofm_id' => "1", 'class_id' => 3, 'code' => "WST-001", 'description' => "WASTE", 'long_description' => "", 'created_at' => now(), 'updated_at' => now() ],
             
 
         ]);

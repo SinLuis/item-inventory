@@ -54,7 +54,7 @@ class MutationinResource extends Resource
                     
                     return $mutationouts->mapWithKeys(function ($mutout) {
                         return [
-                            $mutout->id => 'PIB: ' . $mutout->pib_number . ' - ' . $mutout->item_code . ' - ' . $mutout->item_description . ' - ' . $mutout->move_quantity . ' ' . $mutout->item_uofm . ' - From : ' . $mutout->storagesout_desc
+                            $mutout->id => $mutout->bbin->document->code . ': ' . $mutout->pib_number . ' - ' . $mutout->item_code . ' - ' . $mutout->item_description . ' - ' . $mutout->move_quantity . ' ' . $mutout->item_uofm . ' - From : ' . $mutout->storagesout_desc
                         ];
                     })->toArray();
                 })
@@ -152,9 +152,9 @@ class MutationinResource extends Resource
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
