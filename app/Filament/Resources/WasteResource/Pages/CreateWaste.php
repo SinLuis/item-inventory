@@ -29,7 +29,15 @@ class CreateWaste extends CreateRecord
             ->danger() // Use danger() for error notifications
             ->send();
             $this->halt();
-        }else{
+        }
+        if ($data['document_date'] < $bbout->document_date ){
+            Notification::make()
+            ->title('Waste Document Date cannot Older than ' . $bbout->document_date)
+            ->danger() // Use danger() for error notifications
+            ->send();
+            $this->halt();
+        }
+        else{
             // $bbout->quantity_remaining = $data['qty_after'];
             $bbout->quantity_remaining = $bbout->quantity_remaining - $data['total_quantity'] ;
             $bbout->save();

@@ -30,6 +30,13 @@ class CreateBbinadj extends CreateRecord
             ->send();
             $this->halt();
         }
+        if ($data['adjust_date'] < $bbin->document_date ){
+            Notification::make()
+            ->title('BB IN Adjustment Document Date cannot Older than '. $bbin->document_date)
+            ->danger() // Use danger() for error notifications
+            ->send();
+            $this->halt();
+        }
         if ($data['qty_after'] < ($bbin->total_quantity - $bbin->quantity_remaining)) {
             Notification::make()
             ->title('The Quantity After must be at least ' . $bbin->total_quantity - $bbin->quantity_remaining)

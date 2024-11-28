@@ -28,7 +28,15 @@ class CreateHpout extends CreateRecord
             ->danger() // Use danger() for error notifications
             ->send();
             $this->halt();
-        }else{
+        }
+        if ($data['document_date'] < $hpin->document_date ){
+            Notification::make()
+            ->title('HP OUT Document Date cannot Older than ' . $hpin->document_date)
+            ->danger() // Use danger() for error notifications
+            ->send();
+            $this->halt();
+        }
+        else{
             $hpin->quantity_remaining = $hpin->quantity_remaining - $data['total_quantity'];
             $hpin->save();
         }

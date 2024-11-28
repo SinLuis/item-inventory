@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('class_id')->unsigned();
             $table->string('code');
             $table->string('description');
-            $table->string('long_description');
+            $table->string('long_description')->nullable();
             // $table->string('class_id')->references('id')->on('class_items');
             // $table->string('uofm')->references('id')->on('uofms');
 

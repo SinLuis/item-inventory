@@ -28,9 +28,23 @@ class CreateMutationout extends CreateRecord
             ->danger() // Use danger() for error notifications
             ->send();
             $this->halt();
-        }else{
+        }
+        if ($data['storagesout_id'] == $data['storagesin_id']) {
+            Notification::make()
+            ->title('Storage Out and In Cannot be same')
+            ->danger() // Use danger() for error notifications
+            ->send();
+            $this->halt();
+        }
+        if ($data['document_date'] < $bbin->document_date ){
+            Notification::make()
+            ->title('Mutation Out Document Date cannot Older than ' . $bbin->document_date)
+            ->danger() // Use danger() for error notifications
+            ->send();
+            $this->halt();
+        }
+        else{
             $bbin->quantity_remaining = $bbin->quantity_remaining - $data['move_quantity'];
-            $bbin->total_quantity = $bbin->total_quantity - $data['move_quantity'];
             $bbin->save();
         }
 

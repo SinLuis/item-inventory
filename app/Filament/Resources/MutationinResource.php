@@ -44,7 +44,7 @@ class MutationinResource extends Resource
                 DatePicker::make('document_date')->label(trans('Tanggal Keluar'))->native(false)->closeonDateSelection()->required(),
 
                 Select::make('mutout')
-                ->label(trans('Search'))
+                ->label(trans('Daftar Mutation Out'))
                 ->options(function () {
                     $mutationouts = Mutationout::whereDoesntHave('mutationin')
                         ->get();
@@ -54,7 +54,7 @@ class MutationinResource extends Resource
                     
                     return $mutationouts->mapWithKeys(function ($mutout) {
                         return [
-                            $mutout->id => 'PIB: ' . $mutout->pib_number . ' - ' . $mutout->item_id . ' - ' . $mutout->item_description . ' - ' . $mutout->move_quantity . ' ' . $mutout->item_uofm . ' - ' . $mutout->storagesout_desc
+                            $mutout->id => 'PIB: ' . $mutout->pib_number . ' - ' . $mutout->item_code . ' - ' . $mutout->item_description . ' - ' . $mutout->move_quantity . ' ' . $mutout->item_uofm . ' - From : ' . $mutout->storagesout_desc
                         ];
                     })->toArray();
                 })
@@ -91,7 +91,7 @@ class MutationinResource extends Resource
                         Hidden::make('storagesout_id'),
                         TextInput::make('storagesout_desc')->label('Gudang Asal')->readOnly(),
                         Hidden::make('storagesin_id')->label('Gudang Tujuan'),
-                        TextInput::make('storagesin_desc')->label('Gudang Asal')->readOnly(),
+                        TextInput::make('storagesin_desc')->label('Gudang Tujuan')->readOnly(),
                         // Select::make('storagesin_id')->relationship('storagein', 'storage')->label(trans('Gudang Tujuan'))->required()->searchable()->preload()->reactive(),
                         TextInput::make('move_quantity')->label('Jumlah Dipindahkan')->numeric()->required()->rule('numeric')->rule('gt:0'),
                         TextInput::make('notes')->label(trans('Keterangan Lain')),

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('item_id');
             $table->foreign('item_id')->references('id')->on('items');
             $table->string('item_description');
-            $table->string('item_longdescription');
+            $table->string('item_longdescription')->nullable();
             $table->string('item_uofm');
             $table->integer('total_container');
             $table->decimal('total_quantity', 12, 4);

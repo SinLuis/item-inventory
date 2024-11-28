@@ -40,7 +40,7 @@ class ItemResource extends Resource
                 ->schema([
                     TextInput::make('code')->label(trans('Item ID'))->required(),
                     TextInput::make('description')->label(trans('Item Description'))->required(),
-                    TextInput::make('long_description')->label(trans('Long Description'))->required(),
+                    TextInput::make('long_description')->label(trans('Long Description')),
                     Select::make('class_id')->relationship('class', 'description')->required(),
                     Select::make('uofm_id')->relationship('uofm', 'code')->required(),
                     // Select::make('class_id')->options(ClassItem::all()->pluck('class_item_id'))->required(),

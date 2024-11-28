@@ -30,6 +30,13 @@ class CreateBbout extends CreateRecord
             ->send();
             $this->halt();
         }
+        if ($data['document_date'] < $bbin->document_date ){
+            Notification::make()
+            ->title('BB OUT Document Date cannot Older than ' . $bbin->document_date)
+            ->danger() // Use danger() for error notifications
+            ->send();
+            $this->halt();
+        }
         if ($data['use_quantity'] + $data['sub_quantity'] > $bbin->quantity_remaining) {
             Notification::make()
             ->title('The Maximum Quantity is ' . $bbin->quantity_remaining)

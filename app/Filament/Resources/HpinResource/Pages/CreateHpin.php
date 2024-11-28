@@ -29,6 +29,13 @@ class CreateHpin extends CreateRecord
             ->send();
             $this->halt();
         }
+        if ($data['document_date'] < $bbout->document_date ){
+            Notification::make()
+            ->title('HP IN Document Date cannot Older than ' . $bbout->document_date)
+            ->danger() // Use danger() for error notifications
+            ->send();
+            $this->halt();
+        }
         if ($data['produce_quantity'] + $data['sub_quantity'] > $bbout->quantity_remaining) {
             Notification::make()
             ->title('The Maximum Quantity is ' . $bbout->quantity_remaining)

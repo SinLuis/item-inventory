@@ -49,12 +49,13 @@ class StockcardResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            // ->query(fn (Builder $query) => $query->orderBy('document_date', 'asc'))
             ->columns([
                 TextColumn::make('pib_number')->searchable()->toggleable(),
                 TextColumn::make('seri_number')->searchable()->toggleable(),
                 TextColumn::make('document_date')->searchable()->toggleable(),
                 TextColumn::make('transaction_description')->searchable()->toggleable(),
-                TextColumn::make('item.class.code')->searchable()->toggleable(),
+                TextColumn::make('item.class.code')->label('Class')->searchable()->toggleable(),
                 TextColumn::make('item.code')->label('Item Code')->searchable()->toggleable(),
                 TextColumn::make('item.description')->label('Item Description')->searchable()->toggleable(),
                 TextColumn::make('quantity_in')->label('Quantity In')->getStateUsing(function ($record) {
@@ -67,8 +68,8 @@ class StockcardResource extends Resource
                             ? $record->total_quantity 
                             : 0;
                     })->toggleable(),
-                TextColumn::make('item.uofm.code')->searchable()->toggleable(),
-                TextColumn::make('storages.storage')->searchable()->toggleable(),
+                TextColumn::make('item.uofm.code')->label('Uofm')->searchable()->toggleable(),
+                TextColumn::make('storages.storage')->label('Gudang')->searchable()->toggleable(),
             ])
             ->filters([
                 Filter::make('document_date_range')
@@ -88,7 +89,7 @@ class StockcardResource extends Resource
                             ]);
                         }
                     }),
-            ])
+            ])->defaultSort('document_date', 'asc')
             ->actions([
                 // Tables\Actions\EditAction::make(),
             ])

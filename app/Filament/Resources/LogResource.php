@@ -54,8 +54,7 @@ class LogResource extends Resource
                 TextColumn::make('transaction_description')->label('Jenis Transaksi')->sortable()->searchable()->toggleable(),
                 TextColumn::make('log_date')->label('Tanggal Input')->sortable()->searchable()->toggleable(),
                 TextColumn::make('user_name')->label('PIC')->sortable()->searchable()->toggleable(),
-            ])
-            
+            ])->defaultSort('log_date', 'asc')            
             ->filters([
                 Filter::make('document_date_range')
                     ->form([

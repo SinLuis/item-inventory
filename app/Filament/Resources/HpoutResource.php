@@ -110,7 +110,7 @@ class HpoutResource extends Resource
                 Hidden::make('item_id'),
                 TextInput::make('item_code')->label(trans('Kode Barang'))->readOnly(),
                 TextInput::make('item_description')->label(trans('Nama Barang'))->readOnly(),
-                TextInput::make('item_longdescription')->label(trans('Deskripsi'))->readOnly(),
+                TextInput::make('item_longdescription')->label(trans('Deskripsi')),
                 TextInput::make('item_uofm')->label(trans('Satuan'))->readOnly(),
                 TextInput::make('pib_number')->label(trans('No PIB'))->readOnly(),
                 TextInput::make('seri_number')->label(trans('No Seri'))->readOnly(),
