@@ -18,32 +18,43 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'email' => 'admin@pbn.co.id',
-                'password' => bcrypt('admin123')
+                'password' => bcrypt('admin123'),
+                'role' => 'Admin'
             ],
             [
                 'name' => 'Luis',
                 'email' => 'sin.luis@pbn.co.id',
-                'password' => bcrypt('luis123')
+                'password' => bcrypt('luis123'),
+                'role' => 'Creator'
             ],
             [
                 'name' => 'Rudi',
                 'email' => 'rudi.cahyadi@pbn.co.id',
-                'password' => bcrypt('rudi123')
+                'password' => bcrypt('rudi123'),
+                'role' => 'Viewer'
             ],
             [
                 'name' => 'Andreas',
                 'email' => 'andreas.chendra@pbn.co.id',
-                'password' => bcrypt('andreas123')
+                'password' => bcrypt('andreas123'),
+                'role' => 'Creator'
             ]
         ];
-        
-        // Create role once
-        $role = Role::create(['name' => 'Admin']);
-        
+
+        // Create roles
+        $roles = [
+            'Admin' => Role::firstOrCreate(['name' => 'Admin']),
+            'Creator' => Role::firstOrCreate(['name' => 'Creator']),
+            'Viewer' => Role::firstOrCreate(['name' => 'Viewer']),
+        ];
+
         // Loop through users and create them with roles
         foreach ($users as $userData) {
+            $roleName = $userData['role'];
+            unset($userData['role']); // Remove role from user data before creating the user
+
             $user = User::factory()->create($userData);
-            $user->assignRole($role);
+            $user->assignRole($roles[$roleName]);
         }
     }
 }

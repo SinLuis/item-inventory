@@ -21,7 +21,7 @@ class MutationinPolicy
      */
     public function view(User $user, Mutationin $mutationin): bool
     {
-        return $user->hasRole('Admin');
+        return $user->hasRole('Admin') ||  $user->hasRole('Creator');
     }
 
     /**
@@ -29,7 +29,7 @@ class MutationinPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('Admin');
+        return $user->hasRole('Admin') ||  $user->hasRole('Creator');
     }
 
     /**
@@ -37,7 +37,7 @@ class MutationinPolicy
      */
     public function update(User $user, Mutationin $mutationin): bool
     {
-        return false;
+        return $user->hasRole('Admin');
     }
 
     /**
@@ -45,7 +45,7 @@ class MutationinPolicy
      */
     public function delete(User $user, Mutationin $mutationin): bool
     {
-        return false;
+        return $user->hasRole('Admin');
     }
 
     /**

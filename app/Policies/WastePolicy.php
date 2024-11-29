@@ -21,7 +21,7 @@ class WastePolicy
      */
     public function view(User $user, Waste $waste): bool
     {
-        return $user->hasRole('Admin');
+        return $user->hasRole('Admin') ||  $user->hasRole('Creator');
     }
 
     /**
@@ -29,7 +29,7 @@ class WastePolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('Admin');
+        return $user->hasRole('Admin') ||  $user->hasRole('Creator');
     }
 
     /**
@@ -37,7 +37,7 @@ class WastePolicy
      */
     public function update(User $user, Waste $waste): bool
     {
-        return false;
+        return $user->hasRole('Admin');
     }
 
     /**
@@ -45,7 +45,7 @@ class WastePolicy
      */
     public function delete(User $user, Waste $waste): bool
     {
-        return false;
+        return $user->hasRole('Admin');
     }
 
     /**

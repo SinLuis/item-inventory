@@ -21,7 +21,7 @@ class BbinPolicy
      */
     public function view(User $user, Bbin $bbin): bool
     {
-        return $user->hasRole('Admin');
+        return $user->hasRole('Admin') || $user->hasRole('Creator');
     }
 
     /**
@@ -29,11 +29,7 @@ class BbinPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRole('Admin')) {
-            return true;
-        }
-    
-        return false; 
+        return $user->hasRole('Admin') || $user->hasRole('Creator');
     }
 
     /**
@@ -41,7 +37,7 @@ class BbinPolicy
      */
     public function update(User $user, Bbin $bbin): bool
     {
-        return false; 
+        return $user->hasRole('Admin'); 
     }
 
     /**
@@ -49,7 +45,7 @@ class BbinPolicy
      */
     public function delete(User $user, Bbin $bbin): bool
     {
-        return false; 
+        return $user->hasRole('Admin');
     }
 
     /**

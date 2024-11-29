@@ -21,7 +21,7 @@ class HpoutPolicy
      */
     public function view(User $user, Hpout $hpout): bool
     {
-        return $user->hasRole('Admin');
+        return $user->hasRole('Admin') ||  $user->hasRole('Creator');
     }
 
     /**
@@ -29,7 +29,7 @@ class HpoutPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('Admin');
+        return $user->hasRole('Admin') ||  $user->hasRole('Creator');
     }
 
     /**
@@ -37,7 +37,7 @@ class HpoutPolicy
      */
     public function update(User $user, Hpout $hpout): bool
     {
-        return false;
+        return $user->hasRole('Admin');
     }
 
     /**
@@ -45,7 +45,7 @@ class HpoutPolicy
      */
     public function delete(User $user, Hpout $hpout): bool
     {
-        return false;
+        return $user->hasRole('Admin');
     }
 
     /**
