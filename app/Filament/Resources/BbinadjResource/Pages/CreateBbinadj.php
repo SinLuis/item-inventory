@@ -37,15 +37,16 @@ class CreateBbinadj extends CreateRecord
             ->send();
             $this->halt();
         }
-        if ($data['qty_after'] < ($bbin->total_quantity - $bbin->quantity_remaining)) {
-            Notification::make()
-            ->title('The Quantity After must be at least ' . $bbin->total_quantity - $bbin->quantity_remaining)
-            ->danger() // Use danger() for error notifications
-            ->send();
-            $this->halt();
-        }else{
-            $bbin->total_quantity = $data['qty_after'];
-            $bbin->quantity_remaining = $bbin->quantity_remaining + ($data['qty_after'] - $data['qty_before']);
+        // if ($data['qty_after'] < ($bbin->total_quantity - $bbin->quantity_remaining)) {
+        //     Notification::make()
+        //     ->title('The Quantity After must be at least ' . $bbin->total_quantity - $bbin->quantity_remaining)
+        //     ->danger() // Use danger() for error notifications
+        //     ->send();
+        //     $this->halt();
+        // }
+        else{
+            // $bbin->total_quantity = $data['qty_after'];
+            $bbin->quantity_remaining = $data['qty_after'];
             $bbin->save();
         }
 

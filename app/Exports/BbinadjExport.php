@@ -115,6 +115,14 @@ class BbinadjExport implements FromCollection, WithHeadings, WithMapping, Should
                     ],
                 ]);
                 // 2 Close
+
+                // 3 Open
+                $lastRow = $sheet->getHighestRow();
+                $lastColumn = $sheet->getHighestColumn();
+
+                $quantity = "F3:G{$lastRow}";
+                $sheet->getStyle($quantity)->getNumberFormat()->setFormatCode('#,##0.00;(#,##0.00)');
+                // 3 Close
             },
             
         ];

@@ -54,7 +54,7 @@ class HpoutExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
             'Satuan',
             'Jumlah',
             'Mata Uang',
-            'Nilai Barang Ori',
+            'Nilai Barang',
             'Kurs',
             'Nilai Barang IDR'
         ];
@@ -72,14 +72,14 @@ class HpoutExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
             Carbon::parse($hpout->sj_date)->format('d-m-Y'),
             $hpout->customer->customer_name,
             $hpout->country->country,
-            $hpout->item_id,
+            $hpout->item_code,
             $hpout->item_description,
             $hpout->item_uofm,
             $hpout->total_quantity,
             $hpout->currency->currency,
-            number_format($hpout->item_amount, 2, ',', '.'),
-            number_format($hpout->kurs, 2, ',', '.'),
-            number_format($hpout->item_amount * $hpout->kurs, 2, ',', '.'),
+            $hpout->item_amount,
+            $hpout->kurs,
+            $hpout->item_amount * $hpout->kurs,
         ];
     }
 
@@ -121,6 +121,14 @@ class HpoutExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
                     ],
                 ]);
                 // 2 Close
+
+                // 3 Open
+                $lastRow = $sheet->getHighestRow();
+                $lastColumn = $sheet->getHighestColumn();
+
+                $quantity = "K3:{$lastColumn}{$lastRow}";
+                $sheet->getStyle($quantity)->getNumberFormat()->setFormatCode('#,##0.00;(#,##0.00)');
+                // 3 Close
             },
             
         ];

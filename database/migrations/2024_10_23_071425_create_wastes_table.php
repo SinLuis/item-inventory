@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('item_code');
             $table->string('item_description');
             $table->string('item_uofm');
-            $table->decimal('total_quantity', 12, 4);
-            $table->decimal('item_amount', 12, 4);
+            $table->double('total_quantity');
+            $table->double('item_amount');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('user_name');

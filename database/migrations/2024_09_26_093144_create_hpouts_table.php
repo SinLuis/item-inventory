@@ -31,11 +31,11 @@ return new class extends Migration
             $table->string('item_uofm');
             $table->string('pib_number');
             $table->string('seri_number');
-            $table->decimal('total_quantity', 12, 4);
+            $table->double('total_quantity');
             $table->unsignedBigInteger('currency_id')->unsigned();
             $table->foreign('currency_id')->references('id')->on('currencies');
-            $table->decimal('item_amount', 12, 4);
-            $table->decimal('kurs', 12, 4);
+            $table->double('item_amount');
+            $table->double('kurs');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('user_name');

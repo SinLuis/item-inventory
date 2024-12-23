@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use NumberFormatter;
 use App\Exports\BbinExport;
 use App\Filament\Resources\BbinResource\Pages;
 use App\Filament\Resources\BbinResource\RelationManagers;
@@ -123,7 +124,10 @@ class BbinResource extends Resource
                 TextColumn::make('item_uofm')->label('Satuan')->sortable()->searchable()->toggleable(),
                 TextColumn::make('total_container')->label('Jumlah Container')->sortable()->searchable()->toggleable(),
                 TextColumn::make('currency.currency')->label('Mata Uang')->sortable()->searchable()->toggleable(),
-                TextColumn::make('item_amount')->label('Nilai Barang')->sortable()->searchable()->toggleable(),
+                TextColumn::make('item_amount')->label('Nilai Barang')->sortable()->searchable()->toggleable()->formatStateUsing(function ($state) {
+                    $formatter = new NumberFormatter('id_ID', NumberFormatter::DECIMAL);
+                    return $formatter->format($state);
+                }),
                 TextColumn::make('storage.storage')->label('Gudang')->sortable()->searchable()->toggleable(),
                 TextColumn::make('subsupplier.supplier_name')->label('Penerima Subkontrak')->sortable()->searchable()->toggleable(),
                 TextColumn::make('supsupplier.supplier_name')->label('Pemasok Pengirim')->sortable()->searchable()->toggleable(),
@@ -182,3 +186,4 @@ class BbinResource extends Resource
         ];
     }
 }
+

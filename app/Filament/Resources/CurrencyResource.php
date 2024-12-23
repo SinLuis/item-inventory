@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CountryResource\Pages;
-use App\Filament\Resources\CountryResource\RelationManagers;
-use App\Models\Country;
+use App\Filament\Resources\CurrencyResource\Pages;
+use App\Filament\Resources\CurrencyResource\RelationManagers;
+use App\Models\Currency;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -22,13 +22,13 @@ use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CountryResource extends Resource
+class CurrencyResource extends Resource
 {
-    protected static ?string $model = Country::class;
+    protected static ?string $model = Currency::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-flag';
+    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
     protected static ?string $navigationGroup = 'Master';
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 9;
 
     public static function form(Form $form): Form
     {
@@ -36,7 +36,7 @@ class CountryResource extends Resource
             ->schema([
                 Card::make()
                 ->schema([
-                    TextInput::make('country')->label(trans('Country'))->required()
+                    TextInput::make('currency')->label(trans('Currency'))->required()
                 ])
                 ->columns(2)
             ]);
@@ -47,13 +47,12 @@ class CountryResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->label('No')->sortable()->searchable()->toggleable(),
-                TextColumn::make('country')->sortable()->searchable()->toggleable()
+                TextColumn::make('currency')->sortable()->searchable()->toggleable()
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -73,9 +72,9 @@ class CountryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCountries::route('/'),
-            'create' => Pages\CreateCountry::route('/create'),
-            'edit' => Pages\EditCountry::route('/{record}/edit'),
+            'index' => Pages\ListCurrencies::route('/'),
+            'create' => Pages\CreateCurrency::route('/create'),
+            'edit' => Pages\EditCurrency::route('/{record}/edit'),
         ];
     }
 }

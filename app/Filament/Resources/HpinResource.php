@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use NumberFormatter;
 use App\Exports\HpinExport;
 use App\Filament\Resources\HpinResource\Pages;
 use App\Filament\Resources\HpinResource\RelationManagers;
@@ -149,8 +150,14 @@ class HpinResource extends Resource
                 TextColumn::make('item_id')->label('Kode Barang')->sortable()->searchable()->toggleable(),
                 TextColumn::make('item_description')->label('Nama Barang')->sortable()->searchable()->toggleable(),
                 TextColumn::make('item_uofm')->label('Satuan')->sortable()->searchable()->toggleable(),
-                TextColumn::make('produce_quantity')->label('Jumlah dari Produksi')->sortable()->searchable()->toggleable(),
-                TextColumn::make('sub_quantity')->label('Jumlah dari Subkontrak')->sortable()->searchable()->toggleable(),
+                TextColumn::make('produce_quantity')->label('Jumlah dari Produksi')->sortable()->searchable()->toggleable()->formatStateUsing(function ($state) {
+                    $formatter = new NumberFormatter('id_ID', NumberFormatter::DECIMAL);
+                    return $formatter->format($state);
+                }),
+                TextColumn::make('sub_quantity')->label('Jumlah dari Subkontrak')->sortable()->searchable()->toggleable()->formatStateUsing(function ($state) {
+                    $formatter = new NumberFormatter('id_ID', NumberFormatter::DECIMAL);
+                    return $formatter->format($state);
+                }),
                 TextColumn::make('storage.storage')->label('Gudang')->sortable()->searchable()->toggleable(),
             ])
             ->filters([

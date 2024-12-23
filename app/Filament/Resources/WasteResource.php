@@ -88,6 +88,7 @@ class WasteResource extends Resource
                                 // $set('item_id', $hpin->item_id);
                                 // $set('item_description', $hpin->item_description);
                                 // $set('item_uofm', $hpin->item_uofm);
+                                $set('total_quantity', $bbout->quantity_remaining);
 
                             } else {
                                 $set('pib_number', null);
@@ -95,7 +96,7 @@ class WasteResource extends Resource
                                 // $set('item_id', null);
                                 // $set('item_description', null);
                                 // $set('item_uofm', null);
-           
+                                $set('total_quantity', null);
                             }
                             
                         }),

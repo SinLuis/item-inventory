@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use NumberFormatter;
 use App\Exports\BbinadjExport;
 use App\Filament\Resources\BbinadjResource\Pages;
 use App\Filament\Resources\BbinadjResource\RelationManagers;
@@ -73,15 +74,17 @@ class BbinadjResource extends Resource
                                 $set('document_id', $bbin->document_id);
                                 $set('document_code', $bbin->document->code);
                                 $set('document_date', $bbin->document_date);
+                                $set('adjust_date', $bbin->document_date);
                                 $set('pib_number', $bbin->document_number);
                                 $set('seri_number', $bbin->seri_number);
-                                $set('qty_before', $bbin->total_quantity);
+                                $set('qty_before', $bbin->quantity_remaining);
                                 
                                 
                             } else {
                                 $set('document_id', null);
                                 $set('document_description', null);
                                 $set('document_date', null);
+                                $set('adjust_date', null);
                                 $set('pib_number', null);
                                 $set('seri_number', null);
                                 $set('qty_before', null);
@@ -94,9 +97,9 @@ class BbinadjResource extends Resource
                 TextInput::make('pib_number')->label(trans('No Dok PIB'))->readOnly(),
                 TextInput::make('seri_number')->label(trans('Seri Barang'))->readOnly(),
                 TextInput::make('qty_before')->label(trans('Qty Before'))->readOnly(),
-                TextInput::make('qty_after')->label(trans('Qty After'))->rule('min:0'),
+                TextInput::make('qty_after')->label(trans('Qty After'))->rule('min:0')->required(),
                 TextInput::make('notes')->label(trans('Remark')),
-                DatePicker::make('adjust_date')->label(trans('Tanggal Penyesuaian'))->native(false)->required(),
+                TextInput::make('adjust_date')->label(trans('Tanggal Penyesuaian'))->readOnly(),
                 Hidden::make('user_id')->default(auth()->id()),
                 TextInput::make('user_name')
                 ->label(trans('User'))
@@ -119,8 +122,14 @@ class BbinadjResource extends Resource
                 TextColumn::make('document_date')->label('Tanggal')->sortable()->searchable()->toggleable(),
                 TextColumn::make('bbin.document_number')->label('No Dok')->sortable()->searchable()->toggleable(),
                 TextColumn::make('seri_number')->label('Seri Barang')->sortable()->searchable()->toggleable(),
-                TextColumn::make('qty_before')->label('Qty Lama')->sortable()->searchable()->toggleable(),
-                TextColumn::make('qty_after')->label('Qty Baru')->sortable()->searchable()->toggleable(),
+                TextColumn::make('qty_before')->label('Qty Lama')->sortable()->searchable()->toggleable()->formatStateUsing(function ($state) {
+                    $formatter = new NumberFormatter('id_ID', NumberFormatter::DECIMAL);
+                    return $formatter->format($state);
+                }),
+                TextColumn::make('qty_after')->label('Qty Baru')->sortable()->searchable()->toggleable()->formatStateUsing(function ($state) {
+                    $formatter = new NumberFormatter('id_ID', NumberFormatter::DECIMAL);
+                    return $formatter->format($state);
+                }),
                 TextColumn::make('notes')->label('Remark')->sortable()->searchable()->toggleable(),
                 TextColumn::make('adjust_date')->label('Tanggal Penyesuaian')->sortable()->searchable()->toggleable(),
                 TextColumn::make('user_name')->label('PIC')->sortable()->searchable()->toggleable(),    

@@ -114,6 +114,14 @@ class BboutExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
                     ],
                 ]);
                 // 2 Close
+
+                // 3 Open
+                $lastRow = $sheet->getHighestRow();
+                $lastColumn = $sheet->getHighestColumn();
+
+                $quantity = "G3:{$lastColumn}{$lastRow}";
+                $sheet->getStyle($quantity)->getNumberFormat()->setFormatCode('#,##0.00;(#,##0.00)');
+                // 3 Close
             },
             
         ];

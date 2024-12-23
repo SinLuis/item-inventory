@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Stockcard extends Model
 {
     use HasFactory;
+    protected static ?string $model = Stockcard::class; // This references the Stockcard model
     protected $fillable = [
         'pib_number',
         'seri_number',

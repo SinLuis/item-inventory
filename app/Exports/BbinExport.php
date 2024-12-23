@@ -57,7 +57,7 @@ class BbinExport implements FromCollection, WithHeadings, WithMapping, ShouldAut
             'Jumlah Kontainer',
             'Jumlah Total',
             'Mata Uang',
-            'Nilai Barang Ori',
+            'Nilai Barang',
             'Kurs',
             'Nilai Barang IDR',
             'Gudang',
@@ -86,9 +86,12 @@ class BbinExport implements FromCollection, WithHeadings, WithMapping, ShouldAut
             $bbin->total_container,
             $bbin->total_quantity,
             $bbin->currency->currency,
-            number_format($bbin->item_amount, 2, ',', '.'),
-            number_format($bbin->kurs, 2, ',', '.'),
-            number_format($bbin->item_amount * $bbin->kurs, 2, ',', '.'),
+            $bbin->item_amount,
+            // number_format($bbin->item_amount, 2, ',', '.'),
+            $bbin->kurs,
+            // number_format($bbin->kurs, 2, ',', '.'),
+            $bbin->item_amount * $bbin->kurs,
+            // number_format($bbin->item_amount * $bbin->kurs, 2, ',', '.'),
             $bbin->storage->storage,
             $bbin->subsupplier->supplier_name ?? 'Nihil',
             $bbin->supsupplier->supplier_name,
@@ -135,6 +138,14 @@ class BbinExport implements FromCollection, WithHeadings, WithMapping, ShouldAut
                     ],
                 ]);
                 // 2 Close
+
+                // 3 Open
+                $lastRow = $sheet->getHighestRow();
+                $lastColumn = $sheet->getHighestColumn();
+
+                $quantity = "K3:{$lastColumn}{$lastRow}";
+                $sheet->getStyle($quantity)->getNumberFormat()->setFormatCode('#,##0.00;(#,##0.00)');
+                // 3 Close
             },
             
         ];

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Exports\BboutExport;
 
+use NumberFormatter;
 use App\Filament\Resources\BboutResource\Pages;
 use App\Filament\Resources\BboutResource\RelationManagers;
 use App\Models\Bbout;
@@ -179,8 +180,14 @@ class BboutResource extends Resource
                 TextColumn::make('item_code')->label('Kode Barang')->sortable()->searchable()->toggleable(),
                 TextColumn::make('item_description')->label('Nama Barang')->sortable()->searchable()->toggleable(),
                 TextColumn::make('item_uofm')->label('Satuan')->sortable()->searchable()->toggleable(),
-                TextColumn::make('use_quantity')->label('Jumlah Digunakan')->sortable()->searchable()->toggleable(),
-                TextColumn::make('sub_quantity')->label('Jumlah Disubkontrakan')->sortable()->searchable()->toggleable(),
+                TextColumn::make('use_quantity')->label('Jumlah Digunakan')->sortable()->searchable()->toggleable()->formatStateUsing(function ($state) {
+                    $formatter = new NumberFormatter('id_ID', NumberFormatter::DECIMAL);
+                    return $formatter->format($state);
+                }),
+                TextColumn::make('sub_quantity')->label('Jumlah Disubkontrakan')->sortable()->searchable()->toggleable()->formatStateUsing(function ($state) {
+                    $formatter = new NumberFormatter('id_ID', NumberFormatter::DECIMAL);
+                    return $formatter->format($state);
+                }),
                 TextColumn::make('subsupplier.supplier_name')->label('Penerima Subkontrak')->sortable()->searchable()->toggleable(),
                 TextColumn::make('notes')->label('Keterangan')->sortable()->searchable()->toggleable(),
                 ])

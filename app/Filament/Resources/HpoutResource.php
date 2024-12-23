@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use NumberFormatter;
 use App\Exports\HpoutExport;
 use App\Filament\Resources\HpoutResource\Pages;
 use App\Filament\Resources\HpoutResource\RelationManagers;
@@ -154,9 +155,15 @@ class HpoutResource extends Resource
                 TextColumn::make('item_id')->label('Kode Barang')->sortable()->searchable()->toggleable(),
                 TextColumn::make('item_description')->label('Nama Barang')->sortable()->searchable()->toggleable(),
                 TextColumn::make('item_uofm')->label('Satuan')->sortable()->searchable()->toggleable(),
-                TextColumn::make('total_quantity')->label('Jumlah')->sortable()->searchable()->toggleable(),
+                TextColumn::make('total_quantity')->label('Jumlah')->sortable()->searchable()->toggleable()->formatStateUsing(function ($state) {
+                    $formatter = new NumberFormatter('id_ID', NumberFormatter::DECIMAL);
+                    return $formatter->format($state);
+                }),
                 TextColumn::make('currency.currency')->label('Mata Uang')->sortable()->searchable()->toggleable(),
-                TextColumn::make('item_amount')->label('Nilai Barang')->sortable()->searchable()->toggleable(),
+                TextColumn::make('item_amount')->label('Nilai Barang')->sortable()->searchable()->toggleable()->formatStateUsing(function ($state) {
+                    $formatter = new NumberFormatter('id_ID', NumberFormatter::DECIMAL);
+                    return $formatter->format($state);
+                }),
             ])
             ->filters([
                 Filter::make('document_date_range')
@@ -186,7 +193,7 @@ class HpoutResource extends Resource
                         ->label('Export to Excel')
                         ->action(function ($records) {
                             $recordIds = $records->pluck('id')->toArray(); // Extract only the IDs
-                            return Excel::download(new HpoutExport($recordIds), 'Hasil Produksi Masuk.xlsx');
+                            return Excel::download(new HpoutExport($recordIds), 'Hasil Produksi Keluar.xlsx');
                         })
                         ->requiresConfirmation(),
                 ])->label('Export'),
