@@ -29,6 +29,7 @@ class Bbout extends Model
         'subkontrak_id',
         'notes',
         'fg_id',
+        'fg_code',
         'fg_description',
         'user_id',
         'user_name'

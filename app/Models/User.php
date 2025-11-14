@@ -75,4 +75,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Log::class);
     }
+
+    public function wip()
+    {
+        return $this->hasMany(Wip::class);
+    }
 }

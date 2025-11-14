@@ -45,11 +45,21 @@ class Item extends Model
         return $this->hasMany(Bbout::class);
     }
 
+    public function hpin()
+    {
+        return $this->hasMany(Hpin::class);
+    }
+
     public function hpout()
     {
         return $this->hasMany(Hpout::class);
     }
     
+    public function wip()
+    {
+        return $this->hasMany(Wip::class);
+    }
+
     public function waste()
     {
         return $this->hasMany(Bbin::class);

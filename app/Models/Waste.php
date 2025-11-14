@@ -87,4 +87,9 @@ class Waste extends Model
     {
         return $this->belongsTo(Bbout::class);
     }
+
+    public function hpin()
+    {
+        return $this->belongsTo(HPIN::class);
+    }
 }

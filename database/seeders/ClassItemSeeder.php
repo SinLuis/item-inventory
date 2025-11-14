@@ -41,6 +41,12 @@ class ClassItemSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            [
+                'code' => 'WIP',
+                'description' => 'Work In Progress',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
         // $classitem = ClassItem::factory()->create([
         //     [

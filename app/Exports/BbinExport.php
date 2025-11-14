@@ -22,19 +22,26 @@ class BbinExport implements FromCollection, WithHeadings, WithMapping, ShouldAut
     use Exportable;
     private $rowNumber = 0;
     private $records;
+    private $startDate;
+    private $endDate;
     protected $columns = ['document_id','document_number', 'document_date', 'seri_number', 'reff_number', 'reff_date', 'item_id', 'item_description', 'item_uofm', 'total_container', 'total_quantity', 'currency_id', 'item_amount', 'storages_id', 'subkontrak_id', 'supplier_id', 'country_id', 'kurs']; // Define the columns you want to export
     /**
     * @return \Illuminate\Support\Collection
     */
     
-    public function __construct(array $records)
+    public function __construct(array $records, $startDate = null, $endDate = null)
     {
         $this->records = $records;
+        if ($startDate && $endDate) {
+            $this->startDate = Carbon::parse($startDate)->format('d M Y');
+            $this->endDate = Carbon::parse($endDate)->format('d M Y');
+            
+        }
     }
 
     public function collection()
     {
-        // return Bbin::select($this->columns)->get();
+        // dd($this->records);
         return Bbin::whereIn('id', $this->records)->get();
         
         $emptyRow = collect([['', '']]); // Adjust number of empty cells based on your columns

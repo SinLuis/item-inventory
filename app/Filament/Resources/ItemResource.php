@@ -54,6 +54,7 @@ class ItemResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')->sortable()->searchable()->toggleable(),
                 TextColumn::make('code')->sortable()->searchable()->toggleable(),
                 TextColumn::make('description')->sortable()->searchable()->toggleable(),
                 TextColumn::make('class.description')->sortable()->searchable()->toggleable(),

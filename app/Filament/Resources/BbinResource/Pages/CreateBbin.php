@@ -3,42 +3,44 @@
 namespace App\Filament\Resources\BbinResource\Pages;
 
 use App\Filament\Resources\BbinResource;
-use Filament\Actions;
-use Filament\Notifications\Notification;
+use App\Models\Bbin;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Database\Eloquent\Model;
 
 class CreateBbin extends CreateRecord
 {
     protected static string $resource = BbinResource::class;
 
-    protected function getRedirectUrl(): string
+    /**
+     * Create multiple Bbin records from the repeater rows.
+     */
+    protected function handleRecordCreation(array $data): Model
     {
-        return $this->getResource()::getUrl('index');
+        $rows = $data['rows'] ?? [];
+        $last = null;
+
+        foreach ($rows as $row) {
+            $row['user_id']   = auth()->id();
+            $row['user_name'] = auth()->user()->name;
+            $last = Bbin::create($row);
+        }
+
+        // If no rows were submitted, create a minimal record or throw validation as you prefer.
+        if (! $last) {
+            $last = Bbin::create([
+                'user_id'   => auth()->id(),
+                'user_name' => auth()->user()->name,
+            ]);
+        }
+
+        return $last;
     }
 
-
-    // protected function beforeCreate(): void
-    // {   
-    //     $data = $this->data;
-    //     // dd($data['bbin']);
-    //     // $bbin = Bbin::find($data['bbin_id']);
-    //     if ($data['total_quantity'] <= 0) {
-    //         Notification::make()
-    //         ->title('The Quantity must be at least more than 0')
-    //         ->danger() // Use danger() for error notifications
-    //         ->send();
-    //         $this->halt();
-    //     }
-    //     if ($data['kurs'] <= 1) {
-    //         Notification::make()
-    //         ->title('The Kurs must be at least more than 0')
-    //         ->danger() // Use danger() for error notifications
-    //         ->send();
-    //         $this->halt();
-    //     }
-    //     else{
-    
-    //         // $data->save();
-    //     }
-    // }
+    /**
+     * After creating many, go back to index instead of opening the last record.
+     */
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    }
 }

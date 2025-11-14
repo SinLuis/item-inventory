@@ -11,30 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bbouts', function (Blueprint $table) {
+        Schema::create('wips', function (Blueprint $table) {
             $table->id();
             $table->string('document_number');
             $table->date('document_date');
-            $table->unsignedBigInteger('bbin_id')->unsigned();
-            $table->foreign('bbin_id')->references('id')->on('bbins');
+            $table->unsignedBigInteger('hp_id')->unsigned();
+            $table->foreign('hp_id')->references('id')->on('hpins');
             $table->string('pib_number');
             $table->string('seri_number');
-            $table->unsignedBigInteger('item_id');
-            $table->foreign('item_id')->references('id')->on('items');
-            $table->string('item_code');
-            $table->string('item_description');
-            $table->string('item_uofm');
-            $table->string('subkontrak_name')->nullable();
-            $table->double('use_quantity')->nullable();
-            $table->double('quantity_remaining');
-            $table->double('sub_quantity')->nullable() ;
-            $table->unsignedBigInteger('subkontrak_id')->nullable();
-            $table->foreign('subkontrak_id')->references('id')->on('suppliers');
-            $table->string('notes')->nullable();
+            $table->unsignedBigInteger('wip_id');
+            $table->foreign('wip_id')->references('id')->on('items');
+            $table->string('wip_code');
+            $table->string('wip_description');
+            $table->string('wip_uofm');
+            $table->double('wip_quantity');
+            $table->double('wip_quantity_remaining');
             $table->unsignedBigInteger('fg_id');
             $table->foreign('fg_id')->references('id')->on('items');
             $table->string('fg_code');
             $table->string('fg_description');
+            $table->unsignedBigInteger('fg_uofm_id');
+            $table->string('fg_uofm_description');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('user_name');
@@ -47,6 +44,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bbouts');
+        Schema::dropIfExists('wips');
     }
 };

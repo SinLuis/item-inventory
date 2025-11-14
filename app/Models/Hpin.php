@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Stockcard;
 use App\Models\Log;
+use App\Models\Stockcard;
+use App\Models\Waste;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,14 +17,21 @@ class Hpin extends Model
         'document_number',
         'document_date',
         'bbout_id',
-        'item_id',
-        'item_code',
-        'item_description',
-        'item_uofm',
+        'wips_id',
+        'fg_id',
+        'fg_code',
+        'fg_description',
+        'fg_uofm',
+        'fg_quantity',
+        'fg_quantity_remaining',
+        'wip_id',
+        'wip_code',
+        'wip_description',
+        'wip_uofm',
+        'wip_quantity',
+        'wip_quantity_remaining',
         'pib_number',
         'seri_number',
-        'produce_quantity',
-        'quantity_remaining',
         'sub_quantity',
         'storages_id',
         'user_id',
@@ -36,13 +44,20 @@ class Hpin extends Model
 
         parent::boot();
 
-        static::saving(function ($hpin  ) {
-            if (is_null($hpin->quantity_remaining)) {
-                $hpin->quantity_remaining = ($hpin->produce_quantity ?? 0) + ($hpin->sub_quantity ?? 0);
+
+        static::saving(function ($hpin) {
+            if (is_null($hpin->fg_quantity_remaining)) {
+                $hpin->fg_quantity_remaining = ($hpin->fg_quantity ?? 0) + ($hpin->sub_quantity ?? 0);
+            }
+            if (is_null($hpin->wip_quantity_remaining)) {
+                $hpin->wip_quantity_remaining = ($hpin->wip_quantity ?? 0);
             }
         });
 
-        static::created(function ($hpin) {
+        
+        static::created(function ($hpin) {   
+            $bboutQty = $hpin->bbout->use_quantity ?? 0;   
+
             // Pastikan document_date diparse dengan benar menjadi objek Carbon
             $documentDate = Carbon::parse($hpin->document_date); // Parsing tanggal
             $createDate = Carbon::parse($hpin->created_at);
@@ -81,13 +96,33 @@ class Hpin extends Model
                 'transaction_id' => $hpin->id,
                 'transaction_description' =>'Hasil Produksi Masuk',
                 'transaction_type' => 1,
-                'item_id' => $hpin->item_id,
-                'total_quantity' => $hpin->produce_quantity + $hpin->sub_quantity,
+                'item_id' => $hpin->fg_id,
+                'total_quantity' => $hpin->fg_quantity + $hpin->sub_quantity + $hpin->wip_quantity,
                 'storages_id' => $hpin->storages_id,
                 'user_id' => auth()->id(),
                 'user_name' => auth()->user()->name 
                 // Tambahkan field lain yang diperlukan
             ]);
+
+            if($hpin->bbout_id != null){
+                    Waste::create([
+                    'document_number' => $hpin->document_number,
+                    'document_date' => $hpin->document_date,
+                    'pib_number' => $hpin->pib_number,
+                    'seri_number' => $hpin->seri_number,
+                    'bbout_id' => $hpin->bbout_id,
+                    'item_id' => 25,
+                    'item_code' => 'WST-001',
+                    'item_description' => 'WASTE',
+                    'item_uofm' => 'KG',
+                    'total_quantity' => $bboutQty - ($hpin->fg_quantity + $hpin->sub_quantity + $hpin->wip_quantity),
+                    'item_amount' => 0,
+                    'user_id' => auth()->id(),
+                    'user_name' => auth()->user()->name 
+                    // Tambahkan field lain yang diperlukan
+                ]);
+            }
+            
         });
     }
 
@@ -96,9 +131,19 @@ class Hpin extends Model
         return $this->belongsTo(Bbin::class);
     }
 
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+    }
+
     public function hpout()
     {
         return $this->hasMany(Hpout::class);
+    }
+
+    public function wip()
+    {
+        return $this->hasOne(Hpout::class, 'wips_id');
     }
 
     public function storage()
@@ -116,7 +161,7 @@ class Hpin extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function item()
+    public function fg()
     {
         return $this->belongsTo(Item::class);
     }
